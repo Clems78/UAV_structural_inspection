@@ -1,0 +1,93 @@
+    % Traveling Salesman Problem formulation 
+% Path generation
+
+% Generate the number of possible path based on the number of waypoints 
+idxs = nchoosek(1:nb_waypoints,2);
+
+% Calculate all the distance
+dist = pdist(waypoints, 'euclidean');
+lendist = length(dist);
+
+G = graph(idxs(:,1),idxs(:,2));
+% figure
+hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
+hold on
+axis equal;
+legend('Surface', 'Cluster medoids', 'Viewpoints', 'Waypoints', 'Start point', 'Path');
+
+
+hold off
+
+
+% Create the equality constraints matrix 
+Aeq = spalloc(nb_waypoints,length(idxs),nb_waypoints*(nb_waypoints-1)); % Allocate a sparse matrix
+for ii = 1:nb_waypoints
+    whichIdxs = (idxs == ii); % Find the trips that include stop ii
+    whichIdxs = sparse(sum(whichIdxs,2)); % Include trips where ii is at either end
+    Aeq(ii,:) = whichIdxs'; % Include in the constraint matrix
+end
+beq = 2*ones(nb_waypoints,1);  
+
+% Binary bound
+intcon = 1:lendist;
+lb = zeros(lendist,1);
+ub = ones(lendist,1);
+
+opts = optimoptions('intlinprog','Display','off');
+[x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
+
+x_tsp = logical(round(x_tsp));
+% Start node = idxs(x_tsp, 1) and then end nodes
+Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2),[],numnodes(G));
+% Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases
+
+hold on;
+highlight(hGraph,Gsol,'LineStyle','-');
+title('Solution without Subtours');
+
+% Eliminate subtours 
+tourIdxs = conncomp(Gsol); % finds the connected components in the current graph
+numtours = max(tourIdxs); % number of subtours
+fprintf('# of subtours: %d\n',numtours);
+
+A = spalloc(0,lendist,0); % Allocate a sparse linear inequality constraint matrix
+b = [];
+while numtours > 1 % Repeat until there is just one subtour
+    % Add the subtour constraints
+    b = [b;zeros(numtours,1)]; % allocate b
+    A = [A;spalloc(numtours,lendist,nb_waypoints)]; % A guess at how many nonzeros to allocate
+    for ii = 1:numtours
+        rowIdx = size(A,1) + 1; % Counter for indexing
+        subTourIdx = find(tourIdxs == ii); % Extract the current subtour
+%         The next lines find all of the variables associated with the
+%         particular subtour, then add an inequality constraint to prohibit
+%         that subtour and all subtours that use those stops.
+        variations = nchoosek(1:length(subTourIdx),2);
+        for jj = 1:length(variations)
+            whichVar = (sum(idxs==subTourIdx(variations(jj,1)),2)) & ...
+                       (sum(idxs==subTourIdx(variations(jj,2)),2));
+            A(rowIdx,whichVar) = 1;
+        end
+        b(rowIdx) = length(subTourIdx) - 1; % One less trip than subtour stops
+    end
+
+    % Try to optimize again
+    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts);
+    x_tsp = logical(round(x_tsp));
+    Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2),[],numnodes(G));
+    % Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases
+    
+    % Visualize result
+    hGraph.LineStyle = 'none'; % Remove the previous highlighted path
+    highlight(hGraph,Gsol,'LineStyle','-')
+    drawnow
+    
+    % How many subtours this time?
+    tourIdxs = conncomp(Gsol);
+    numtours = max(tourIdxs); % number of subtours
+    fprintf('# of subtours: %d\n',numtours)
+end
+
+disp(output.absolutegap)
+
+waypointsOrdering;

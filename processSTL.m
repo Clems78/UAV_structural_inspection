@@ -6,10 +6,10 @@ clc;
 plotter = true;
 in_loop_plotter = true;
 pause_time = 0.001;
-tsp = true;
-trajGeneration = true;
+tsp = false;
+trajGeneration = false;
 opt = true;
-initial_guess = true;
+initial_guess = false;
 
 % Starting points
 start_point = [-2000 -2000 0];
@@ -80,11 +80,7 @@ while (~all_inspected)
 
     % Parcourir tous les échantillons et les clusters
     for i = 1:size(Mtar_ni, 1)
-      % disp(i);
-      % disp("or start of the loop ? ")
-      % disp(['Sample n°', num2str(i)])
         for j = 1:size(C, 1)
-            % disp(['Cluster n°', num2str(j)])
             % Is the sample within inspection range ?
             distance_cluster = sqrt((centroid(i, 1) - C(j, 1))^2 + (centroid(i, 2) - C(j, 2))^2 + (centroid(i, 3) - C(j, 3))^2)/1000;
             within_range = distance_cluster < rmaj_p_2;
@@ -195,5 +191,8 @@ end
 if (trajGeneration)
     trajectoryGeneration;
 end
+
+% Overlap analysis
+overlapCalculation;
 
     

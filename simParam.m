@@ -21,7 +21,7 @@ b = 200; % semi-axes lenght b (mm) minor axis // to surface
 c = 200; % semi-axes lenght c (mm) axis perpendicular to surface
 
 % Detection parameters
-alpha_t = 5; % max allowable angle between the camera's optical axis and the surface normal (degree)
+alpha_t = 30; % max allowable angle between the camera's optical axis and the surface normal (degree)
 G = 0.3; % Ground Sampling Distance (mm/pixel)
 d_insp = G * f * Ih / sensor_height; % inspection distance / camera size and resolution should be the shortest distance between height and width
 

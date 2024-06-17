@@ -6,10 +6,12 @@ clc;
 plotter = true;
 in_loop_plotter = true;
 pause_time = 0.001;
-tsp = false;
+tsp = true;
 trajGeneration = false;
 opt = true;
 initial_guess = false;
+obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
+overlap_calculation = true;
 
 % Starting points
 start_point = [-2000 -2000 0];
@@ -38,6 +40,7 @@ normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
 Mtar_filtered = Mtar(any(Mtar(:, 3) ~= 0, 2), :);
+
 
 % Define the custom distance function with additional parameters using an anonymous function
 customDistFun = @(ZI, ZJ) distFun(ZI, ZJ, rmaj_p_2, rmaj_p_2, alpha_t); % with positionning uncertainty
@@ -174,25 +177,58 @@ clustering_duration = toc;
 % Display that the clustering is done 
 disp(['Clustering done in ' num2str(clustering_duration) ' seconds']);
 
-if (plotter)
-    plotDetectionRange;
-end
-
-if (tsp)
-    tic
-    disp("TSP starts");
-    TSP;
-    TSP_duration = toc;
-
-    % Display that the tsp is done 
-    disp(['TSP done in ' num2str(TSP_duration) ' seconds']);
-end
-
-if (trajGeneration)
-    trajectoryGeneration;
+if tsp
+    switch obj 
+        case 'duration'
+            tic
+            disp("TSP optimised for mission duration starts");
+            TSP_s1;
+            TSP_duration = toc;
+            disp(['TSP optimised for mission duration done in ' num2str(TSP_duration) ' seconds']);
+            [waypointsOrdered, nb_waypoints_ordered] = waypointsOrderingFun(Gsol, nb_waypoints, waypoints); 
+            if (trajGeneration)
+                [position, velocity, acceleration] = traj_generation(nb_waypoints_ordered, waypointsOrdered);
+            end
+        case 'battery'
+            tic
+            disp("TSP optimised for battery consumption starts");
+            TSP_s2;
+            TSP_bat_consumption = toc;
+            disp(['TSP optimised for battery consumption done in ' num2str(TSP_bat_consumption) ' seconds']);
+            [waypointsOrdered, nb_waypoints_ordered] = waypointsOrderingFun(Gsol_2, nb_waypoints, waypoints);
+            if (trajGeneration)
+                [position, velocity, acceleration] = traj_generation(nb_waypoints_ordered, waypointsOrdered);
+            end            
+        case 'comparison'
+            % Mission duration
+            tic
+            disp("TSP optimised for mission duration starts");
+            TSP_s1;
+            TSP_duration = toc;
+            disp(['TSP optimised for mission duration done in ' num2str(TSP_duration) ' seconds']);
+            [waypointsOrdered_1, nb_waypoints_ordered] = waypointsOrderingFun(Gsol, nb_waypoints, waypoints);
+            if (trajGeneration)
+                [position, velocity, acceleration] = traj_generation(nb_waypoints_ordered, waypointsOrdered_1);
+            end
+            % Battery consumption       
+            tic
+            disp("TSP optimised for battery consumption starts");
+            TSP_s2;
+            TSP_bat_consumption = toc;
+            disp(['TSP optimised for battery consumption done in ' num2str(TSP_bat_consumption) ' seconds']);
+            [waypointsOrdered_2, nb_waypoints_ordered] = waypointsOrderingFun(Gsol_2, nb_waypoints, waypoints);
+            if (trajGeneration)
+                [position_2, velocity_2, acceleration_2] = traj_generation(nb_waypoints_ordered, waypointsOrdered_2);
+            end   
+    end
 end
 
 % Overlap analysis
-overlapCalculation;
+if (overlap_calculation)
+    overlapCalculation;
+end
 
+if (plotter)
+    plotDetectionRange;
+end
     

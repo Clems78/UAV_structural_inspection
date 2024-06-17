@@ -1,5 +1,4 @@
 % Waypoints Ordering
-
 edges = Gsol.Edges.EndNodes;
 
 % Initialize the starting node
@@ -24,14 +23,8 @@ for i = 2:nb_waypoints +1
     current_node = next_node;
 end
 
-% Display the order of waypoints
-% disp('Order of waypoints:');
-% disp(order_waypoints);
-
 waypointsOrdered = zeros(nb_waypoints + 1, 3);
 
 for i = 1:nb_waypoints+1
     waypointsOrdered(i, :) = waypoints(order_waypoints(1, i), :);
 end
-
-nb_waypoints = length(waypointsOrdered);

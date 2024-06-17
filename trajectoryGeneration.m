@@ -1,8 +1,5 @@
 % Trajectory generator
-% clc;
-
-% Trajectory generator
-groundSpeed = zeros(nb_waypoints, 1);
+groundSpeed = zeros(nb_waypoints_ordered, 1);
 groundSpeed(:,:) = 1;
 
 % Define wait time of 1 second for all waypoints
@@ -16,13 +13,12 @@ sampleTimes = linspace(t0,tf,100);
 
 [position,~,velocity,acceleration,~] = lookupPose(trajectory,sampleTimes);
 
-hold on;
 
-plot3(position(:,1),position(:,2),position(:,3))
-xlabel("x (m)")
-ylabel("y (m)")
-zlabel("z (m)")
-title("Trajectory")
+% plot3(position(:,1),position(:,2),position(:,3))
+% xlabel("x (m)")
+% ylabel("y (m)")
+% zlabel("z (m)")
+% title("Trajectory")
 
 % figure()
 % subplot(3,1,1)

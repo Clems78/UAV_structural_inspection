@@ -1,4 +1,4 @@
-    % Traveling Salesman Problem formulation 
+% Traveling Salesman Problem formulation 
 % Path generation
 
 % Generate the number of possible path based on the number of waypoints 
@@ -6,18 +6,19 @@ idxs = nchoosek(1:nb_waypoints,2);
 
 % Calculate all the distance
 dist = pdist(waypoints, 'euclidean');
+squaredist = squareform(dist);
 lendist = length(dist);
+
+length(waypoints)
 
 G = graph(idxs(:,1),idxs(:,2));
 % figure
-hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
-hold on
-axis equal;
-legend('Surface', 'Cluster medoids', 'Viewpoints', 'Waypoints', 'Start point', 'Path');
+% hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
+% hold on
+% axis equal;
+% legend('Surface', 'Cluster medoids', 'Viewpoints', 'Waypoints', 'Start point', 'Path');
 
-
-hold off
-
+% hold off
 
 % Create the equality constraints matrix 
 Aeq = spalloc(nb_waypoints,length(idxs),nb_waypoints*(nb_waypoints-1)); % Allocate a sparse matrix
@@ -29,9 +30,9 @@ end
 beq = 2*ones(nb_waypoints,1);  
 
 % Binary bound
-intcon = 1:lendist;
-lb = zeros(lendist,1);
-ub = ones(lendist,1);
+intcon = 1:lendist; % The values in intcon indicate the components of the decision variable x that are integer-valued. intcon has values from 1 through numel(f).
+lb = zeros(lendist,1); % lower bound of the decision variable
+ub = ones(lendist,1); % upper bound of the decision variable
 
 opts = optimoptions('intlinprog','Display','off');
 [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
@@ -41,9 +42,9 @@ x_tsp = logical(round(x_tsp));
 Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2),[],numnodes(G));
 % Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases
 
-hold on;
-highlight(hGraph,Gsol,'LineStyle','-');
-title('Solution without Subtours');
+% hold on;
+% highlight(hGraph,Gsol,'LineStyle','-');
+% title('Solution without Subtours');
 
 % Eliminate subtours 
 tourIdxs = conncomp(Gsol); % finds the connected components in the current graph
@@ -78,9 +79,9 @@ while numtours > 1 % Repeat until there is just one subtour
     % Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases
     
     % Visualize result
-    hGraph.LineStyle = 'none'; % Remove the previous highlighted path
-    highlight(hGraph,Gsol,'LineStyle','-')
-    drawnow
+    % hGraph.LineStyle = 'none'; % Remove the previous highlighted path
+    % highlight(hGraph,Gsol,'LineStyle','-')
+    % drawnow
     
     % How many subtours this time?
     tourIdxs = conncomp(Gsol);
@@ -90,4 +91,4 @@ end
 
 disp(output.absolutegap)
 
-waypointsOrdering;
+% waypointsOrdering;

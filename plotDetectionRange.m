@@ -6,7 +6,7 @@ traj_plotter = true;
 overlap_plotter = false;
 
 % Plot the surface
-figure(1);
+figure(2);
 trisurf(gm);
 axis equal;
 hold on;
@@ -66,13 +66,13 @@ if (tsp_plotter && tsp)
             drawnow;
             title('Inspection optimised for battery consumption');
         case 'comparison'
-            figure(1);
+            figure(2);
             hold on;
             hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
             highlight(hGraph,Gsol,'LineStyle','-');
             drawnow;
             title('Inspection optimised for mission duration');
-            figure(2);
+            figure(3);
             hold on;
             hGraph_2 = plot(G_2,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
             highlight(hGraph_2,Gsol_2,'LineStyle','-');
@@ -92,12 +92,12 @@ if (traj_plotter && trajGeneration)
             title('Inspection optimised for battery consumption + trajectory');
         case 'comparison'
             % Duration
-            figure(1);
+            figure(2);
             hold on;
             plot3(position(:,1),position(:,2),position(:,3))
             title('Inspection optimised for mission duration + trajectory');
             % Battery
-            figure(2)
+            figure(3)
             hold on;
             plot3(position_2(:,1),position_2(:,2),position_2(:,3))
             title('Inspection optimised for battery consumption + trajectory');
@@ -120,7 +120,7 @@ if (overlap_plotter && overlap_calculation)
     categories = {'No Overlap', 'Overlapped Elements', 'Overlapped Twice', 'Overlapped Thrice'};
     percentages = [no_overlap, overlapped_elmts, overlapped_twice, overlapped_thrice];
     % Create the bar plot
-    figure(3);
+    figure(4);
     bar(percentages);
     % Set the x-tick labels using the category labels
     set(gca, 'XTick', 1:numel(categories), 'XTickLabel', categories);

@@ -9,8 +9,6 @@ dist = pdist(waypoints, 'euclidean');
 squaredist = squareform(dist);
 lendist = length(dist);
 
-length(waypoints)
-
 G = graph(idxs(:,1),idxs(:,2));
 % figure
 % hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
@@ -88,7 +86,3 @@ while numtours > 1 % Repeat until there is just one subtour
     numtours = max(tourIdxs); % number of subtours
     fprintf('# of subtours: %d\n',numtours)
 end
-
-disp(output.absolutegap)
-
-% waypointsOrdering;

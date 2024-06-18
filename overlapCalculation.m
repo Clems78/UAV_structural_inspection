@@ -38,9 +38,6 @@ for i = 1:size(Mtar_filtered, 1)
 
 end
 
-% Disp results
-disp(['Overlap: ', num2str(area_overlaped/area_structure * 100), ' %']);
-
 no_overlap = sum(inspected_overlap == 1) / size(Mtar_filtered, 1) * 100;
 overlapped_twice = sum(inspected_overlap == 2) / size(Mtar_filtered, 1) * 100;
 overlapped_thrice = sum(inspected_overlap == 3) / size(Mtar_filtered, 1) * 100;

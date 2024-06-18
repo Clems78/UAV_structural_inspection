@@ -106,27 +106,28 @@ if (traj_plotter && trajGeneration)
 end
 
 % Overlap plotter
-if (overlap_plotter && overlap_calculation)
+if overlap_calculation
+    % Disp results
+    disp(['Overlap: ', num2str(area_overlaped/area_structure * 100), ' %']);
     disp([num2str(no_overlap), '% of the polygons are inspected exactly once']);
     disp([num2str(overlapped_elmts), '% of the polygons are inspected more than once']);
     disp([num2str(overlapped_twice), '% of the polygons are inspected twice']);
-    disp([num2str(overlapped_thrice), '% of the polygons are inspected thrice']);
-    
+    disp([num2str(overlapped_thrice), '% of the polygons are inspected thrice']);  
+end
+
+if (overlap_plotter && overlap_calculation)
     % Category labels for the bar plot
     categories = {'No Overlap', 'Overlapped Elements', 'Overlapped Twice', 'Overlapped Thrice'};
     percentages = [no_overlap, overlapped_elmts, overlapped_twice, overlapped_thrice];
-    
     % Create the bar plot
     figure(3);
     bar(percentages);
     % Set the x-tick labels using the category labels
     set(gca, 'XTick', 1:numel(categories), 'XTickLabel', categories);
-    
     % Add a title and labels to the plot
     title('Overlap Analysis');
     xlabel('Overlap Status');
     ylabel('Percentage (%)');
-    
     % Set the y-axis limits to [0, 100] to show percentages clearly
     ylim([0 100]);
 end

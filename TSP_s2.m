@@ -2,14 +2,26 @@
 
 % Traveling Salesman Problem formulation 
 % Path generation
+obj_s2 = "alt"; %"alt" or "alt&path"
+opti_ratio = 0.1;
 
 altitudeFun = @(ZI, ZJ) altFun(ZI, ZJ);
 
 % Generate the number of possible path based on the number of waypoints 
 idxs_2 = nchoosek(1:nb_waypoints,2);
 
-% Calculate all the distance
-dist_2 = pdist(waypoints, altitudeFun);
+% Calculate the euclidian distance between viewpoints
+dist_eucli = pdist(waypoints, 'euclidean');
+
+% Calculate the custom distance
+if strcmp(obj_s2, 'alt')
+    dist_2 = pdist(waypoints, altitudeFun);
+end
+
+if strcmp(obj_s2, 'alt&path')
+    dist_2 = pdist(waypoints, altitudeFun) + opti_ratio * dist_eucli ;
+end
+
 squaredist_2 = squareform(dist_2);
 lendist_2 = length(dist_2);
 
@@ -91,6 +103,15 @@ while numtours_2 > 1 % Repeat until there is just one subtour
     fprintf('# of subtours: %d\n',numtours_2)
 end
 
-disp(output_2.absolutegap)
-
-% waypointsOrdering;
+% disp(['Absolute gap: ', num2str(output_2.absolutegap)]);
+% 
+% % Calculate path length
+% path_lenght_2 = sum(dist(x_tsp_2 == 1))/1e3;
+% disp(['Path length (battery): ', num2str(path_lenght_2), ' m']);
+% 
+% % Calculate the altitude change
+% alt_changes_2 = 0;
+% for i = 1:length(waypointsOrdered_2)-1
+%     alt_changes_2 = alt_changes_2 + abs(waypointsOrdered_2(i+1, 3) - waypointsOrdered_1(i, 3));
+% end
+% disp(['Overall altitude changes (battery): ', num2str(alt_changes_2), ' m']);

@@ -13,6 +13,7 @@ camera_location = [0 0 200]; % Distance from the center of the drone (mm)
 
 % UAV specification
 Vuav = 1; % sphere radius for collision avoidance (m)
+start_point = [-2000 -2000 0];
 
 % Ellipsoid representing the uav error in positioning 
 % Is equal to the threshold to reach a waypoint

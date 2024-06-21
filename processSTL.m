@@ -1,6 +1,6 @@
 % Processing the STL file
 % Starting points
-disp("Clustering starts");
+cprintf('Red', 'Clustering starts...\n');
 tic;
 
 % Import STL
@@ -47,18 +47,23 @@ while (~all_inspected)
     if (opt == true)
         if (ii == 1)
             [idx, C] = kmedoids(Mtar_ni, k, 'Distance', customDistFun);
-            disp(['k = ', num2str(k)]);
-            disp("test");
+            if in_loop_printer  
+                disp(['k = ', num2str(k)]);
+            end
             ii = k + 1;
             k = 1;
         else
             [idx, C(ii, :)] = kmedoids(Mtar_ni(inspected(:,1) == false, :), k, 'Distance', customDistFun);
-            disp(['k = ', num2str(ii)]);
+            if in_loop_printer
+                disp(['k = ', num2str(ii)]);
+            end
             ii = ii + 1;
         end
     else
         [idx, C] = kmedoids(Mtar_ni, k, 'Distance', customDistFun);
-        disp(['k = ', num2str(k)]);
+        if in_loop_printer  
+            disp(['k = ', num2str(k)]);
+        end    
     end
 
     % Parcourir tous les échantillons et les clusters
@@ -101,9 +106,9 @@ while (~all_inspected)
         end
     end
     count = sum(inspected == 0);
-    disp([num2str(count), ' samples out of ', num2str(length(Mtar_ni)), ' are still not inspected']);
-    % disp('Cluster number increases');
-
+    if in_loop_printer
+        disp([num2str(count), ' samples out of ', num2str(length(Mtar_ni)), ' are still not inspected']);
+    end
     % Plot the surface
     if (in_loop_plotter)
         trisurf(gm, 'FaceVertexCData', colors);
@@ -153,5 +158,5 @@ nb_waypoints = length(waypoints);
 clustering_duration = toc;
 
 % Display that the clustering is done 
-disp(['Clustering done in ' num2str(clustering_duration) ' seconds']);
+cprintf('Red', 'Clustering done in %f seconds\n\n', clustering_duration);
     

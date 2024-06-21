@@ -2,8 +2,6 @@
 
 % Traveling Salesman Problem formulation 
 % Path generation
-obj_s2 = "alt"; %"alt" or "alt&path"
-opti_ratio = 0.1;
 
 altitudeFun = @(ZI, ZJ) altFun(ZI, ZJ);
 

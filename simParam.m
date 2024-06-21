@@ -12,8 +12,14 @@ f = 50; % Focal lenght (mm)
 camera_location = [0 0 200]; % Distance from the center of the drone (mm)
 
 % UAV specification
-Vuav = 1; % sphere radius for collision avoidance (m)
+CAuav = 1; % sphere radius for collision avoidance (m)
 start_point = [-2000 -2000 0];
+V = 3.5; % Speed of the uav
+
+% Mission specifications
+% waiting time at each viewpoints
+% Fixed speed (temporary)
+% Take-off speed
 
 % Ellipsoid representing the uav error in positioning 
 % Is equal to the threshold to reach a waypoint
@@ -22,7 +28,7 @@ b = 200; % semi-axes lenght b (mm) minor axis // to surface
 c = 200; % semi-axes lenght c (mm) axis perpendicular to surface
 
 % Detection parameters
-alpha_t = 30; % max allowable angle between the camera's optical axis and the surface normal (degree)
+alpha_t = 10; % max allowable angle between the camera's optical axis and the surface normal (degree)
 G = 0.3; % Ground Sampling Distance (mm/pixel)
 d_insp = G * f * Ih / sensor_height; % inspection distance / camera size and resolution should be the shortest distance between height and width
 

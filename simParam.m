@@ -4,10 +4,10 @@
 % ==> Best results of clusters positionning somehow !
 
 % Camera settings
-sensor_width = 25.1; % camera frame width (mm) 
-sensor_height = 16.7; % camera frame height (mm)
-Iw = 6000; % Width resolution (pixel)
-Ih = 4000; % Height resolution (pixel)
+sensor_width = 35.7; % camera frame width (mm) 
+sensor_height = 23.8; % camera frame height (mm)
+Iw = 9504 ; % Width resoluwidwition (pixel)
+Ih = 6336; % Height resolution (pixel)
 f = 50; % Focal lenght (mm)
 camera_location = [0 0 200]; % Distance from the center of the drone (mm)
 
@@ -28,13 +28,17 @@ b = 200; % semi-axes lenght b (mm) minor axis // to surface
 c = 200; % semi-axes lenght c (mm) axis perpendicular to surface
 
 % Detection parameters
-alpha_t = 10; % max allowable angle between the camera's optical axis and the surface normal (degree)
+alpha_t = 5; % max allowable angle between the camera's optical axis and the surface normal (degree)
 G = 0.3; % Ground Sampling Distance (mm/pixel)
 d_insp = G * f * Ih / sensor_height; % inspection distance / camera size and resolution should be the shortest distance between height and width
 
-% Calculate horizontal and vertical FOV in radians
-horizontal_FOV = 2 * atan(sensor_width / (2 * f));
-vertical_FOV = 2 * atan(sensor_height / (2 * f));
+% Calculate horizontal and vertical FOV in radians (if not available by
+% manufacturer, equation is available)
+% horizontal_FOV = 2 * atan(sensor_width / (2 * f));
+% vertical_FOV = 2 * atan(sensor_height / (2 * f));
+
+horizontal_FOV = deg2rad(39.3);
+vertical_FOV = deg2rad(26.8);
 
 % Calculate width and height of the area covered
 W = 2 * d_insp * tan(horizontal_FOV / 2);

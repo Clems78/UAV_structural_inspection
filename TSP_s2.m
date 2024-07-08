@@ -40,6 +40,8 @@ for ii = 1:nb_waypoints
     Aeq_2(ii,:) = whichIdxs_2'; % Include in the constraint matrix
 end
 beq_2 = 2*ones(nb_waypoints,1);  
+disp('Equality constraint matrix done, starting solver');
+
 
 % Binary bound
 intcon_2 = 1:lendist_2; % The values in intcon indicate the components of the decision variable x that are integer-valued. intcon has values from 1 through numel(f).
@@ -48,6 +50,8 @@ ub_2 = ones(lendist_2,1); % upper bound of the decision variable
 
 opts_2 = optimoptions('intlinprog','Display','off');
 [x_tsp_2,costopt_2,exitflag_2,output_2] = intlinprog(dist_2,intcon_2,[],[],Aeq_2,beq_2,lb_2,ub_2,opts_2);
+
+disp('Initial solver calculation done');
 
 x_tsp_2 = logical(round(x_tsp_2));
 % Start node = idxs(x_tsp, 1) and then end nodes

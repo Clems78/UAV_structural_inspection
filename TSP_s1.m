@@ -1,6 +1,6 @@
 % Traveling Salesman Problem formulation 
 % Path generation
-
+tic;
 % Generate the number of possible path based on the number of waypoints 
 idxs = nchoosek(1:nb_waypoints,2);
 
@@ -26,14 +26,21 @@ for ii = 1:nb_waypoints
     Aeq(ii,:) = whichIdxs'; % Include in the constraint matrix
 end
 beq = 2*ones(nb_waypoints,1);  
+disp('Equality constraint matrix done, starting solver');
 
 % Binary bound
 intcon = 1:lendist; % The values in intcon indicate the components of the decision variable x that are integer-valued. intcon has values from 1 through numel(f).
 lb = zeros(lendist,1); % lower bound of the decision variable
 ub = ones(lendist,1); % upper bound of the decision variable
 
-opts = optimoptions('intlinprog','Display','off');
+opts = optimoptions('intlinprog','Display','iter', 'RelativeGapTolerance',1e-2, 'CutGeneration', 'basic', 'IntegerPreprocess', 'none', 'Heuristics', 'advanced');
+% opts = optimoptions('ga','Display','iter');
 [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
+% [x_tsp,costopt,exitflag,output] = ga(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
+
+
+initial_solver_s1 = toc;
+cprintf('Red', 'Initial solver calculation done in %f seconds\n\n', initial_solver_s1);
 
 x_tsp = logical(round(x_tsp));
 % Start node = idxs(x_tsp, 1) and then end nodes
@@ -71,7 +78,8 @@ while numtours > 1 % Repeat until there is just one subtour
     end
 
     % Try to optimize again
-    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts);
+    opts_subtour = optimoptions('intlinprog','Display','iter', 'RelativeGapTolerance',5e-3, 'CutGeneration', 'basic', 'IntegerPreprocess', 'basic', 'Heuristics', 'advanced');
+    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts_subtour);
     x_tsp = logical(round(x_tsp));
     Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2),[],numnodes(G));
     % Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases

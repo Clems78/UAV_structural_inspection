@@ -41,6 +41,14 @@ trisurf(gm, 'FaceVertexCData', colors);
 Mtar_ni = Mtar_filtered;
 ii = 1;
 
+% Define the name of the file to save intermediate results
+checkpointFile = 'checkpoint.mat';
+
+% Initialize some data
+result = [];
+
+try
+
 while (~all_inspected)
 
     % Perform k-medoids clustering
@@ -58,6 +66,11 @@ while (~all_inspected)
                 disp(['k = ', num2str(ii)]);
             end
             ii = ii + 1;
+            % Save the intermediate result every 10 iterations
+            if mod(ii, 10) == 0
+                save(checkpointFile, 'result', 'ii');
+                fprintf('Checkpoint saved at iteration %d\n', ii);
+            end
         end
     else
         [idx, C] = kmedoids(Mtar_ni, k, 'Distance', customDistFun);
@@ -160,3 +173,14 @@ clustering_duration = toc;
 % Display that the clustering is done 
 cprintf('Red', 'Clustering done in %f seconds\n\n', clustering_duration);
     
+    % Final save after completing all iterations
+    save('final_result.mat', 'result');
+    fprintf('Final result saved\n');
+
+catch ME
+    % Save the current workspace if an error occurs
+    save('error_checkpoint.mat');
+    fprintf('Error occurred: %s\n', ME.message);
+    fprintf('Workspace saved to error_checkpoint.mat\n');
+end
+

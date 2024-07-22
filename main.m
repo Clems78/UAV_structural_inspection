@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = true;
+vp_calculation = false;
 
 if vp_calculation
 clear;
@@ -15,11 +15,11 @@ vp_calculation = true;
 end
 
 % Import STL
-file_name = 'STEP/cylinder_2.stl';
+file_name = 'board.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
-opt = true; % Updating the input dataset or no
+opt = false; % Updating the input dataset or no
 
 % Parameters TSP
 tsp = true;
@@ -29,13 +29,13 @@ obj_s2 = "alt&path"; %"alt" or "alt&path"
 opti_ratio = 2;
 
 % Paremeters metrics 
-overlap_calculation = false;
+overlap_calculation = true;
 battery_consumption = true;
 
 % Plotter parameters
-plotter = false;
-in_loop_plotter = true;
-in_loop_printer = false;
+plotter = true;
+in_loop_plotter = false;
+in_loop_printer = true;
 pause_time = 0.001;
 
 % Loading simulation parameters

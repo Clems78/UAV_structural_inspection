@@ -19,7 +19,12 @@ centroid = incenter(gm);
 normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
-Mtar_filtered = Mtar(any(Mtar(:, 3) ~= 0, 2), :);
+% Mtar_filtered = Mtar(any(Mtar(:, 3) ~= 0, 2), :);
+% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 2) ~= 0, 2), :);
+% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 1) ~= 2502.08, 2), :);
+% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 3) ~= 2423.68, 2), :);
+
+% Mtar_filtered = Mtar(any(Mtar(:, 2) ~= -9.999999999999999e+01, 2), :);
 
 
 % Define the custom distance function with additional parameters using an anonymous function

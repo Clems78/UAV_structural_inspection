@@ -43,27 +43,6 @@ if one_face_filtering
 
 end
 
-
-
-% Define the filtering criteria
-% lower_bound_1 = 4900 - 1;
-% upper_bound_1 = 4900 + 51;
-
-% Filter the rows where the second column is within the specified range
-% Mtar_filtered = Mtar_filtered(Mtar_filtered(:, 2) >= lower_bound_1 & Mtar_filtered(:, 2) <= upper_bound_1, :);
-
-
-
-
-
-
-% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 2) ~= 5000, 2), :);
-% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 1) ~= 2502.08, 2), :);
-% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 3) ~= 7413.68, 2), :);
-
-% Mtar_filtered = Mtar(any(Mtar(:, 2) ~= -9.999999999999999e+01, 2), :);
-
-
 % Define the custom distance function with additional parameters using an anonymous function
 customDistFun = @(ZI, ZJ) distFun(ZI, ZJ, rmaj_p_2, rmaj_p_2, alpha_t); % with positionning uncertainty
 

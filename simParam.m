@@ -9,12 +9,17 @@ sensor_height = 23.8; % camera frame height (mm)
 Iw = 9504 ; % Width resoluwidwition (pixel)
 Ih = 6336; % Height resolution (pixel)
 f = 50; % Focal lenght (mm)
-camera_location = [0 0 200]; % Distance from the center of the drone (mm)
+camera_location = [120 120 200]; % Distance from the center of the drone (mm)
 
 % UAV specification
 CAuav = 1; % sphere radius for collision avoidance (m)
-start_point = [-2000 -2000 0];
+start_point = [0 0 0];
 V = 3.5; % Speed of the uav
+
+% Structure pose 
+x_transport = 0;
+y_transport = 5000;
+z_transport = 5000;
 
 % Mission specifications
 % waiting time at each viewpoints

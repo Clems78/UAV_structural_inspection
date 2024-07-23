@@ -6,6 +6,15 @@ tic;
 % Import STL
 [gm, fileformat, attributes, solidID] = stlread(file_name);
 
+points_updated = zeros(size(gm.Points, 1), 3);
+
+% Move structure
+points_updated(:, 1) = gm.Points(:, 1) + x_transport;
+points_updated(:, 2) = gm.Points(:, 2) + y_transport;
+points_updated(:, 3) = gm.Points(:, 3) + z_transport;
+
+gm = triangulation(gm.ConnectivityList, points_updated);
+
 % Cluster number estimation + filtered ground nodes
 clusterNbEstimation;   
 
@@ -19,10 +28,34 @@ centroid = incenter(gm);
 normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
-% Mtar_filtered = Mtar(any(Mtar(:, 3) ~= 0, 2), :);
-% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 2) ~= 0, 2), :);
+
+Mtar_filtered = Mtar((Mtar(:, 3) > min(Mtar(:, 3))+1), :);
+Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-1), :);
+
+Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 2) < max(Mtar_filtered(:, 2))-1), :);
+
+Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) < max(Mtar_filtered(:, 1))-1), :);
+Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) > min(Mtar_filtered(:, 1))+1), :);
+
+
+
+
+
+% Define the filtering criteria
+% lower_bound_1 = 4900 - 1;
+% upper_bound_1 = 4900 + 51;
+
+% Filter the rows where the second column is within the specified range
+% Mtar_filtered = Mtar_filtered(Mtar_filtered(:, 2) >= lower_bound_1 & Mtar_filtered(:, 2) <= upper_bound_1, :);
+
+
+
+
+
+
+% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 2) ~= 5000, 2), :);
 % Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 1) ~= 2502.08, 2), :);
-% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 3) ~= 2423.68, 2), :);
+% Mtar_filtered = Mtar_filtered(any(Mtar_filtered(:, 3) ~= 7413.68, 2), :);
 
 % Mtar_filtered = Mtar(any(Mtar(:, 2) ~= -9.999999999999999e+01, 2), :);
 

@@ -3,6 +3,8 @@
 cprintf('Red', 'Clustering starts...\n');
 tic;
 
+one_face_filtering = false;
+
 % Import STL
 [gm, fileformat, attributes, solidID] = stlread(file_name);
 
@@ -30,14 +32,16 @@ normal = faceNormal(gm);
 Mtar = [centroid, normal];
 
 Mtar_filtered = Mtar((Mtar(:, 3) > min(Mtar(:, 3))+1), :);
-Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-1), :);
 
-Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 2) < max(Mtar_filtered(:, 2))-1), :);
+if one_face_filtering
+    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-1), :);
+    
+    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 2) < max(Mtar_filtered(:, 2))-1), :);
+    
+    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) < max(Mtar_filtered(:, 1))-1), :);
+    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) > min(Mtar_filtered(:, 1))+1), :);
 
-Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) < max(Mtar_filtered(:, 1))-1), :);
-Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) > min(Mtar_filtered(:, 1))+1), :);
-
-
+end
 
 
 
@@ -202,7 +206,7 @@ norm_vectors = vectors ./ sqrt(sum(vectors.^2, 2));
 viewpoints = medoids + d_insp_p * norm_vectors;
 
 % Waypoints generation
-waypoints = viewpoints + camera_location;
+waypoints = viewpoints - camera_location;
 waypoints = [start_point; waypoints];
 nb_waypoints = length(waypoints);
 

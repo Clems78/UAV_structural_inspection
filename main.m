@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = false;
+vp_calculation = true;
 
 if vp_calculation
 clear;
@@ -15,11 +15,11 @@ vp_calculation = true;
 end
 
 % Import STL
-file_name = 'board.stl';
+file_name = 'cylinder_2.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
-opt = false; % Updating the input dataset or no
+opt = true; % Updating the input dataset or no
 
 % Parameters TSP
 tsp = true;
@@ -34,7 +34,7 @@ battery_consumption = true;
 
 % Plotter parameters
 plotter = true;
-in_loop_plotter = false;
+in_loop_plotter = true;
 in_loop_printer = true;
 pause_time = 0.001;
 

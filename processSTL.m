@@ -203,10 +203,12 @@ medoids = C(:, 1:3);
 norm_vectors = vectors ./ sqrt(sum(vectors.^2, 2));
 
 % Viewpoints generation
-viewpoints = medoids + d_insp_p * norm_vectors;
+viewpoints = zeros(size(vectors, 1), 6);
+viewpoints(:, 1:3) = medoids + d_insp_p * norm_vectors;
+viewpoints(:, 4:6) = vectors;
 
 % Waypoints generation
-waypoints = viewpoints - camera_location;
+waypoints = viewpoints(:, 1:3) - camera_location;
 waypoints = [start_point; waypoints];
 nb_waypoints = length(waypoints);
 

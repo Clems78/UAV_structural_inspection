@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = true;
+vp_calculation = false;
 
 if vp_calculation
 clear;

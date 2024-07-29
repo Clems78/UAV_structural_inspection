@@ -17,7 +17,9 @@ if strcmp(obj_s2, 'alt')
 end
 
 if strcmp(obj_s2, 'alt&path')
-    dist_2 = pdist(waypoints, altitudeFun) + opti_ratio * dist_eucli ;
+    % dist_2 = pdist(waypoints, altitudeFun) + opti_ratio * dist_eucli ;
+    dist_2 = (1 - opti_ratio) * pdist(waypoints, altitudeFun) + opti_ratio * dist_eucli ;
+
 end
 
 squaredist_2 = squareform(dist_2);

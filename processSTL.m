@@ -3,7 +3,7 @@
 cprintf('Red', 'Clustering starts...\n');
 tic;
 
-one_face_filtering = false;
+one_face_filtering = true;
 
 % Import STL
 [gm, fileformat, attributes, solidID] = stlread(file_name);
@@ -30,16 +30,31 @@ centroid = incenter(gm);
 normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
+min(Mtar(:, 3))
+Mtar_filtered_1 = Mtar((Mtar(:, 3) > min(Mtar(:, 3))+1), :);
+Mtar_filtered = Mtar_filtered_1((Mtar_filtered_1(:, 3) < max(Mtar_filtered_1(:, 3))-1), :);
 
-Mtar_filtered = Mtar((Mtar(:, 3) > min(Mtar(:, 3))+1), :);
+    % length(Mtar_filtered)
 
 if one_face_filtering
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-1), :);
-    
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 2) < max(Mtar_filtered(:, 2))-1), :);
-    
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) < max(Mtar_filtered(:, 1))-1), :);
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) > min(Mtar_filtered(:, 1))+1), :);
+
+    % Board
+    % Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-1), :);
+    %     length(Mtar_filtered)
+    % 
+    % Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 2) < max(Mtar_filtered(:, 2))-0.00000000000005), :);
+    % length(Mtar_filtered)
+    % 
+    % Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) < max(Mtar_filtered(:, 1))-1), :);
+    %     length(Mtar_filtered)
+    % 
+    % Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) > min(Mtar_filtered(:, 1))+1), :);
+    %     length(Mtar_filtered)
+
+    % Cylinder
+    % Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-10), :);
+
+
 
 end
 

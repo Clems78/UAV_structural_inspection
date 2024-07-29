@@ -40,6 +40,7 @@ Dv = p.Results.Dv;
 Dh = p.Results.Dh;
 L = p.Results.L;
 
+
     switch flight_status
         case 'take-off' 
             E = -0.432*V^2 + 3.786*V - 1.224;
@@ -58,10 +59,22 @@ L = p.Results.L;
         case 'payload'
             E = 0.311*L + 1.735;
         case 'diagonal_upwards'
-            E = (315*Dv - 211.261) + (308.709*Dh/V - 0.852);
-            E = E * hypothenus(Dv, Dh);
+
+            if (Dv > Dh)
+                E = (315*Dv - 211.261) + (308.709*Dh/V - 0.852)*hypothenus(Dv, Dh);
+            elseif (Dh >= Dv)
+                E = (315*Dv - 211.261)*hypothenus(Dv, Dh) + (308.709*Dh/V - 0.852);
+            end
+
+            % E = (315*Dv - 211.261) + (308.709*Dh/V - 0.852)*hypothenus(Dv, Dh);
+            % E = (315*Dv - 211.261) + (308.709*Dh/V - 0.852);
+            % E = (315*Dv - 211.261) + (308.709*Dh/V - 0.852);
+            % E = E * hypothenus(Dv, Dh);
         case 'diagonal_downwards'
-            E = (68.956*Dv - 65.183) + (308.709*Dh/V - 0.852);
-            E = E * hypothenus(Dv, Dh);
+            if (Dv > Dh)
+                E = (68.956*Dv - 65.183) + (308.709*Dh/V - 0.852)*hypothenus(Dv, Dh);
+            elseif (Dh >= Dv)
+                E = (68.956*Dv - 65.183)*hypothenus(Dv, Dh) + (308.709*Dh/V - 0.852);
+            end
     end
 end

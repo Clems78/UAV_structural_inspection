@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = false;
+vp_calculation = true;
 
 if vp_calculation
 clear;
@@ -15,7 +15,8 @@ vp_calculation = true;
 end
 
 % Import STL
-file_name = 'cylinder_2.stl';
+file_name = 'STEP/cylinder_gz.stl';
+% file_name = 'STL/wind_turbine_max_elem_size_1e2.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
@@ -26,7 +27,7 @@ tsp = true;
 trajGeneration = false;
 obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
-opti_ratio = 2;
+opti_ratio = 0.45;
 
 % Paremeters metrics 
 overlap_calculation = true;
@@ -46,13 +47,19 @@ if vp_calculation
     processSTL;
 end
 
+% Initialisation of tsp metrics variable in case of pareto front analysis
+
+
 % Path Generation using the Traveling Salesman Problem formulation 
 if tsp
     switch obj 
         case 'duration'
             tic
             cprintf('Red', 'TSP optimised for mission duration starts\n');
-            TSP_s1;
+            GA;
+            addpath('SA4TSP');
+            % SA;
+            % TSP_s1;
             TSP_duration = toc;
             cprintf('Red', 'TSP optimised for mission duration done in %f seconds\n', TSP_duration);
             [waypointsOrdered, nb_waypoints_ordered] = waypointsOrderingFun(Gsol, nb_waypoints, waypoints); 
@@ -71,13 +78,13 @@ if tsp
             TSP_bat_consumption = toc;
             cprintf('Red', 'TSP optimized for battery consumption done in %f seconds\n', TSP_bat_consumption);
             [waypointsOrdered, nb_waypoints_ordered] = waypointsOrderingFun(Gsol_2, nb_waypoints, waypoints);
-            [path_length_2, alt_changes_2] = TSP_metrics(x_tsp_2, waypointsOrdered, output_2, waypoints);
+            [path_length_2(i_pf), alt_changes_2(i_pf)] = TSP_metrics(x_tsp_2, waypointsOrdered, output_2, waypoints);
             if (trajGeneration)
                 [position, velocity, acceleration] = traj_generation(nb_waypoints_ordered, waypointsOrdered);
             end
             % Battery consumption calculation
             if battery_consumption
-                E = energyConsumptionPath(waypointsOrdered, V); 
+                E(i_pf) = energyConsumptionPath(waypointsOrdered, V); 
             end
         case 'comparison'
             % Mission duration
@@ -112,6 +119,9 @@ if tsp
                 if E_2 < E_1
                 percentage = (E_1 - E_2) / E_1 * 100;
                 cprintf('Blue', 'This path consumes %s%% less energy\n', num2str(percentage));
+                else
+                percentage = (E_2 - E_1) / E_2 * 100;
+                cprintf('Red', 'This path consumes %s%% more energy\n', num2str(percentage));    
                 end
             end 
             

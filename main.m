@@ -15,7 +15,7 @@ vp_calculation = true;
 end
 
 % Import STL
-file_name = 'STEP/cylinder_gz.stl';
+file_name = 'cylinder_gz.stl';
 % file_name = 'STL/wind_turbine_max_elem_size_1e2.stl';
 
 % Parameters viewpoints generation 

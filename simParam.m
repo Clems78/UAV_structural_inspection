@@ -14,6 +14,8 @@ camera_location = [-30 120 229]; % Distance from the center of mass of the drone
 % UAV specification
 CAuav = 1; % sphere radius for collision avoidance (m)
 start_point = [0 0 0];
+TOAL_ros_pose = [0, 0, -3];
+TOAL_ros_heading = 90;
 V = 3.5; % Speed of the uav
 
 % Structure pose 

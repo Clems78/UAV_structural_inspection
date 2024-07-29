@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = false;
+vp_calculation = true;
 
 if vp_calculation
 clear;
@@ -15,7 +15,7 @@ vp_calculation = true;
 end
 
 % Import STL
-file_name = 'cylinder_2.stl';
+file_name = 'board.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;

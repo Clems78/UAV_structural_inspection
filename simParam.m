@@ -4,7 +4,7 @@
 % ==> Best results of clusters positionning somehow !
 
 % Camera settings
-sensor_width = 35.7; % camera frame width (mm) 
+sensor_width = 35.7; % camera fparame width (mm) 
 sensor_height = 23.8; % camera frame height (mm)
 Iw = 9504 ; % Width resoluwidwition (pixel)
 Ih = 6336; % Height resolution (pixel)

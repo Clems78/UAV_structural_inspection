@@ -74,7 +74,7 @@ for jj = 1:length(waypoints_gt)
     R = quat2rotm(adjusted_q);
     
     % Define the camera direction (z-axis in the camera frame)
-    camera_direction = transpose(R(:, 1)) % z-axis of the camera frame
+    camera_direction = transpose(R(:, 1)); % z-axis of the camera frame
     % camera_direction = [0 , -1 , 0]
     % Perform ray tracing to find intersection
     % Create a ray from the camera position in the camera direction
@@ -86,7 +86,7 @@ for jj = 1:length(waypoints_gt)
     [intersect, t, u, v, xcoor] = rayTriangleIntersection(rayOrigin, rayDirection, gm.Points(gm.ConnectivityList(:, 1), :),gm.Points(gm.ConnectivityList(:, 2), :), gm.Points(gm.ConnectivityList(:, 3), :));
     
     % Find the first intersection point
-    intersection_point = xcoor(intersect, :)
+    intersection_point = xcoor(intersect, :);
     inspection_distance = zeros(size(intersection_point, 1), 1);
     
     % Calculate the distance from the camera to the intersection point
@@ -94,7 +94,7 @@ for jj = 1:length(waypoints_gt)
     inspection_distance(ii, :) = norm(intersection_point(ii,:) - camera_location_gt);
     end
     
-    [d_insp_p_pp(jj), min_index] = min(inspection_distance) % Inspection distance
+    [d_insp_p_pp(jj), min_index] = min(inspection_distance); % Inspection distance
     
     C_pp(jj, :) = [intersection_point(min_index, :), -rayDirection];
     

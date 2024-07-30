@@ -105,41 +105,41 @@ for jj = 1:length(waypoints_gt)
         disp('The variable is empty');
         intersection_point = [478.8496	5.1353e+03	7.5344e+03];
     else
-        disp('The variable is not empty');
+    
+        inspection_distance = zeros(size(intersection_point, 1), 1);
+        
+        % Calculate the distance from the camera to the intersection point
+        for ii = 1:size(intersection_point, 1)
+        inspection_distance(ii, :) = norm(intersection_point(ii,:) - camera_location_gt);
+        end
+        
+        [d_insp_p_pp(jj), min_index] = min(inspection_distance) % Inspection distance
+        
+        C_pp(jj, :) = [intersection_point(min_index, :), -rayDirection];
+        
+        % Display the results
+        % % disp('Intersection Point:');
+        % disp(intersection_point);
+        
+        % disp('Inspection Distance:');
+        % disp(d_insp_p_pp);
+        
+        % GSD calculation
+        G_pp(jj) = d_insp_p_pp(jj) * sensor_height / (f * Ih);
+        
+        if (G_pp(jj) > G)
+            disp("Invalid Ground Sampling Distance. Crack detection lowered");
+        else 
+            disp("Valid Ground Sampling Distance");
+        end
+        
+        % Calculate width and height of the area covered
+        W_p_pp = 2 * d_insp_p_pp(jj) * tan(horizontal_FOV_p / 2);
+        H_p_pp = 2 * d_insp_p_pp(jj) * tan(vertical_FOV_p / 2);
+        
+        % Calculate the radius of the inspection area
+        rmaj_p_2_pp(jj) = H_p_pp/2 / 1000;
     end
-    inspection_distance = zeros(size(intersection_point, 1), 1);
-    
-    % Calculate the distance from the camera to the intersection point
-    for ii = 1:size(intersection_point, 1)
-    inspection_distance(ii, :) = norm(intersection_point(ii,:) - camera_location_gt);
-    end
-    
-    [d_insp_p_pp(jj), min_index] = min(inspection_distance) % Inspection distance
-    
-    C_pp(jj, :) = [intersection_point(min_index, :), -rayDirection];
-    
-    % Display the results
-    % % disp('Intersection Point:');
-    % disp(intersection_point);
-    
-    % disp('Inspection Distance:');
-    % disp(d_insp_p_pp);
-    
-    % GSD calculation
-    G_pp(jj) = d_insp_p_pp(jj) * sensor_height / (f * Ih);
-    
-    if (G_pp(jj) > G)
-        disp("Invalid Ground Sampling Distance. Crack detection lowered");
-    else 
-        disp("Valid Ground Sampling Distance");
-    end
-    
-    % Calculate width and height of the area covered
-    W_p_pp = 2 * d_insp_p_pp(jj) * tan(horizontal_FOV_p / 2);
-    H_p_pp = 2 * d_insp_p_pp(jj) * tan(vertical_FOV_p / 2);
-    
-    % Calculate the radius of the inspection area
-    rmaj_p_2_pp(jj) = H_p_pp/2 / 1000;
 end
 
 Mtar_ni_pp = Mtar_filtered;

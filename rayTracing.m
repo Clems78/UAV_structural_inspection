@@ -63,7 +63,7 @@ rayDirectionSto = zeros(length(waypoints_gt_pp), 3);
 
 for jj = 1:length(waypoints_gt_pp)
 
-    q = [waypoints_gt_pp(jj, 7), waypoints_gt_pp(jj, 4), waypoints_gt_pp(jj, 5), waypoints_gt_pp(jj, 6)];
+    q = [-waypoints_gt_pp(jj, 7), -waypoints_gt_pp(jj, 4), waypoints_gt_pp(jj, 5), waypoints_gt_pp(jj, 6)];
     
     % Normalize the quaternion (if not already normalized)
     q = q / norm(q);

@@ -1,4 +1,4 @@
-function [waypointsOrdered, nb_waypoints_ordered] = waypointsOrderingFun(Gsol,nb_waypoints, waypoints)
+function [waypointsOrdered, nb_waypoints_ordered, order_waypoints] = waypointsOrderingFun(Gsol,nb_waypoints, waypoints, C_temp)
 % Waypoints Ordering
 edges = Gsol.Edges.EndNodes;
 
@@ -25,9 +25,11 @@ for i = 2:nb_waypoints +1
 end
 
 waypointsOrdered = zeros(nb_waypoints + 1, 3);
+% C_ordered = zeros(nb_waypoints + 1, 6);
 
 for i = 1:nb_waypoints+1
     waypointsOrdered(i, :) = waypoints(order_waypoints(1, i), :);
+    % C_ordered(i, :) = C_temp(order_waypoints(1, i), :);
 end
 
 nb_waypoints_ordered = length(waypointsOrdered);

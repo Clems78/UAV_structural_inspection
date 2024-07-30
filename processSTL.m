@@ -204,6 +204,8 @@ viewpoints(:, 4:6) = vectors;
 % Waypoints generation
 waypoints = viewpoints(:, 1:3) - camera_location;
 waypoints = [start_point; waypoints];
+C_temp = [[TOAL_ros_pose, start_direction]; C];
+% C_temp = [C_temp; [TOAL_ros_pose, start_direction]];
 nb_waypoints = length(waypoints);
 
 clustering_duration = toc;

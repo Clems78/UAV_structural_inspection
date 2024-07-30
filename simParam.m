@@ -16,6 +16,7 @@ CAuav = 1; % sphere radius for collision avoidance (m)
 start_point = [0 0 0];
 TOAL_ros_pose = [0, 0, -3];
 TOAL_ros_heading = 90;
+start_direction = [0, -1, 0];
 V = 3.5; % Speed of the uav
 
 % Structure pose 

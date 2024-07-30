@@ -15,26 +15,39 @@ connectivityList_rt = gm.ConnectivityList; % Indices forming each triangle
 start_point_pp = [0, 0, 0, 0, 0, 0, 1];
 end_point_pp = [0, 0, 0, 0, 0, 0, 1];
 
-waypoints_gt = [
-    % start_point_pp;
-    0.844826, 1.279378, 2.111121, -0.016629, -0.010365, -0.00338, 0.999802;
-    1.969818, 1.368982, 2.130755, -0.000182, -0.024066, -0.005488, 0.999695;
-    2.168458, 1.312592, 3.386538, 0.003593, -0.001707, 0.009136, 0.99995;
-    2.011791, 1.375606, 4.939784, -0.002057, 0.000928, 0.013028, 0.999913;
-    2.102569, 1.317437, 6.117012, -0.001071, 0.000362, 0.014089, 0.9999;
-    1.117647, 1.271197, 6.243078, 0.001601, 0.015748, 0.01375, 0.99978;
-    -0.063358, 1.276549, 6.238632, 0.000431, 0.029301, 0.017029, 0.999425;
-    -1.451835, 1.296882, 6.292297, 0.004889, 0.024411, 0.014496, 0.999585;
-    -1.769334, 1.381201, 5.198371, -0.001925, 0.000394, 0.00917, 0.999956;
-    -0.621493, 1.345165, 4.703798, -0.002057, -0.023784, 0.010474, 0.99966;
-    0.638204, 1.336819, 4.764419, -0.00054, -0.027907, 0.010788, 0.999552;
-    0.8005, 1.312362, 3.584913, 0.000192, 0.004118, 0.005005, 0.999979;
-    -0.457775, 1.235915, 3.35901, 0.001847, 0.025586, -0.001705, 0.999669;
-    -1.757891, 1.238073, 3.580879, -0.000744, 0.028585, -0.005007, 0.999579;
-    -1.659833, 1.279484, 2.39667, 0.001551, 0.000071, -0.003131, 0.999994;
-    -0.411934, 1.349165, 2.345549, -0.003255, -0.029659, -0.004319, 0.999545;
-    % end_point_pp
-];
+% Define the path to the CSV file
+filePath = 'gt_pose_2024-07-29_23-08-50.csv';
+
+% Read the CSV file
+data = readtable(filePath);
+
+% Extract numeric data, skipping the first row and first column (header and Waypoint)
+waypoints_gt = table2array(data(:, 2:end));
+waypoints_gt = waypoints_gt(2:length(waypoints_gt)-1, :);
+
+% Display the extracted data
+disp(waypoints_gt);
+% 
+% waypoints_gt = [
+%     % start_point_pp;
+%     % 0.844826, 1.279378, 2.111121, -0.016629, -0.010365, -0.00338, 0.999802;
+%     % 1.969818, 1.368982, 2.130755, -0.000182, -0.024066, -0.005488, 0.999695;
+%     2.168458, 1.312592, 3.386538, 0.003593, -0.001707, 0.009136, 0.99995;
+%     2.011791, 1.375606, 4.939784, -0.002057, 0.000928, 0.013028, 0.999913;
+%     2.102569, 1.317437, 6.117012, -0.001071, 0.000362, 0.014089, 0.9999;
+%     1.117647, 1.271197, 6.243078, 0.001601, 0.015748, 0.01375, 0.99978;
+%     -0.063358, 1.276549, 6.238632, 0.000431, 0.029301, 0.017029, 0.999425;
+%     -1.451835, 1.296882, 6.292297, 0.004889, 0.024411, 0.014496, 0.999585;
+%     -1.769334, 1.381201, 5.198371, -0.001925, 0.000394, 0.00917, 0.999956;
+%     -0.621493, 1.345165, 4.703798, -0.002057, -0.023784, 0.010474, 0.99966;
+%     0.638204, 1.336819, 4.764419, -0.00054, -0.027907, 0.010788, 0.999552;
+%     0.8005, 1.312362, 3.584913, 0.000192, 0.004118, 0.005005, 0.999979;
+%     -0.457775, 1.235915, 3.35901, 0.001847, 0.025586, -0.001705, 0.999669;
+%     -1.757891, 1.238073, 3.580879, -0.000744, 0.028585, -0.005007, 0.999579;
+%     -1.659833, 1.279484, 2.39667, 0.001551, 0.000071, -0.003131, 0.999994;
+%     -0.411934, 1.349165, 2.345549, -0.003255, -0.029659, -0.004319, 0.999545;
+%     % end_point_pp
+% ];
 
 % Variable initialisation 
 C_pp = zeros(length(waypoints_gt), 6);
@@ -68,7 +81,7 @@ for jj = 1:length(waypoints_gt)
     adjusted_q = eul2quat(euler);
     
     % Define the camera position and orientation
-    camera_location_gt = [waypoints_gt(jj, 1)*1e3 + camera_location(1), waypoints_gt(jj, 2) *1e3 + camera_location(2), waypoints_gt(jj, 3) *1e3 + camera_location(3)];
+    camera_location_gt = [waypoints_gt(jj, 1)*1e3 + camera_location(1), waypoints_gt(jj, 2) *1e3 + camera_location(2), waypoints_gt(jj, 3) *1e3 + camera_location(3)]
     
     % Convert quaternion to rotation matrix
     R = quat2rotm(adjusted_q);
@@ -87,6 +100,13 @@ for jj = 1:length(waypoints_gt)
     
     % Find the first intersection point
     intersection_point = xcoor(intersect, :)
+  % Check if the variable is empty
+    if isempty(intersection_point)
+        disp('The variable is empty');
+        intersection_point = [478.8496	5.1353e+03	7.5344e+03];
+    else
+        disp('The variable is not empty');
+    end
     inspection_distance = zeros(size(intersection_point, 1), 1);
     
     % Calculate the distance from the camera to the intersection point

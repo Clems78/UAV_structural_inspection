@@ -23,10 +23,10 @@ data = readtable(filePath);
 
 % Extract numeric data, skipping the first row and first column (header and Waypoint)
 waypoints_gt = table2array(data(:, 2:end));
-waypoints_gt = waypoints_gt(2:length(waypoints_gt)-1, :);
+waypoints_gt_pp = waypoints_gt(2:length(waypoints_gt)-1, :);
 
 % Display the extracted data
-disp(waypoints_gt);
+disp(waypoints_gt_pp);
 % 
 % waypoints_gt = [
 %     % start_point_pp;
@@ -50,17 +50,17 @@ disp(waypoints_gt);
 % ];
 
 % Variable initialisation 
-C_pp = zeros(length(waypoints_gt), 6);
-rmaj_p_2_pp = zeros(length(waypoints_gt), 1);
-d_insp_p_pp = zeros(length(waypoints_gt), 1);
-G_pp = zeros(length(waypoints_gt), 1);
-on_target = zeros(length(waypoints_gt), 1);
-heading_sto =zeros(length(waypoints_gt), 1);
+C_pp = zeros(length(waypoints_gt_pp), 6);
+rmaj_p_2_pp = zeros(length(waypoints_gt_pp), 1);
+d_insp_p_pp = zeros(length(waypoints_gt_pp), 1);
+G_pp = zeros(length(waypoints_gt_pp), 1);
+on_target = zeros(length(waypoints_gt_pp), 1);
+heading_sto =zeros(length(waypoints_gt_pp), 1);
 
 
-for jj = 1:length(waypoints_gt)
+for jj = 1:length(waypoints_gt_pp)
 
-    q = [waypoints_gt(jj, 7), waypoints_gt(jj, 4), waypoints_gt(jj, 5), waypoints_gt(jj, 6)];
+    q = [waypoints_gt_pp(jj, 7), waypoints_gt_pp(jj, 4), waypoints_gt_pp(jj, 5), waypoints_gt_pp(jj, 6)];
     
     % Normalize the quaternion (if not already normalized)
     q = q / norm(q);
@@ -85,7 +85,7 @@ for jj = 1:length(waypoints_gt)
     adjusted_q = eul2quat(euler);
     
     % Define the camera position and orientation
-    camera_location_gt = [waypoints_gt(jj, 1)*1e3 + camera_location(1), waypoints_gt(jj, 2) *1e3 + camera_location(2), waypoints_gt(jj, 3) *1e3 + camera_location(3)]
+    camera_location_gt = [waypoints_gt_pp(jj, 1)*1e3 + camera_location(1), waypoints_gt_pp(jj, 2) *1e3 + camera_location(2), waypoints_gt_pp(jj, 3) *1e3 + camera_location(3)]
     
     % Convert quaternion to rotation matrix
     R = quat2rotm(adjusted_q);
@@ -170,9 +170,13 @@ for jj = 1:length(waypoints_gt)
     else
         C_pp(jj, :) = NaN;
     end
-
-
 end
+
+waypoints_gt = waypoints_gt(:, 1:4);
+waypoints_gt(1, 4) = TOAL_ros_heading;
+waypoints_gt(size(waypoints_gt, 1), 4) = TOAL_ros_heading;
+
+waypoints_gt(2:(size(waypoints_gt, 1)-1), 4) = heading_sto;
 
 Mtar_ni_pp = Mtar_filtered;
 

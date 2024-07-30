@@ -54,6 +54,9 @@ C_pp = zeros(length(waypoints_gt), 6);
 rmaj_p_2_pp = zeros(length(waypoints_gt), 1);
 d_insp_p_pp = zeros(length(waypoints_gt), 1);
 G_pp = zeros(length(waypoints_gt), 1);
+on_target = zeros(length(waypoints_gt), 1);
+heading_sto =zeros(length(waypoints_gt), 1);
+
 
 for jj = 1:length(waypoints_gt)
 
@@ -73,6 +76,7 @@ for jj = 1:length(waypoints_gt)
     heading_deg = rad2deg(heading_transported);
     disp('Heading (yaw) in degrees:');
     disp(heading_deg);
+    heading_sto(jj, 1) = heading_deg;
     
     % Update the Euler angles with the new heading
     euler(1) = heading_transported;
@@ -87,8 +91,8 @@ for jj = 1:length(waypoints_gt)
     R = quat2rotm(adjusted_q);
     
     % Define the camera direction (z-axis in the camera frame)
-    camera_direction = transpose(R(:, 1)) % z-axis of the camera frame
-    % camera_direction = [0 , -1 , 0]
+    camera_direction = transpose(R(:, 1)); % z-axis of the camera frame
+    % camera_direction = [1 , 0 , 0]
     % Perform ray tracing to find intersection
     % Create a ray from the camera position in the camera direction
     rayOrigin = camera_location_gt;
@@ -100,14 +104,11 @@ for jj = 1:length(waypoints_gt)
     
     % Find the first intersection point
     intersection_point = xcoor(intersect, :)
-  % Check if the variable is empty
-    if isempty(intersection_point)
-        disp('The variable is empty');
-        intersection_point = [478.8496	5.1353e+03	7.5344e+03];
-    else
-    
+
+    if ~isempty(intersection_point)
+
         inspection_distance = zeros(size(intersection_point, 1), 1);
-        
+    
         % Calculate the distance from the camera to the intersection point
         for ii = 1:size(intersection_point, 1)
         inspection_distance(ii, :) = norm(intersection_point(ii,:) - camera_location_gt);
@@ -139,7 +140,38 @@ for jj = 1:length(waypoints_gt)
         
         % Calculate the radius of the inspection area
         rmaj_p_2_pp(jj) = H_p_pp/2 / 1000;
+    
+        [d_insp_p_pp(jj), min_index] = min(inspection_distance); % Inspection distance
+        
+        C_pp(jj, :) = [intersection_point(min_index, :), -rayDirection];
+        
+        % Display the results
+        % % disp('Intersection Point:');
+        % disp(intersection_point);
+        
+        % disp('Inspection Distance:');
+        % disp(d_insp_p_pp);
+        
+        % GSD calculation
+        G_pp(jj) = d_insp_p_pp(jj) * sensor_height / (f * Ih);
+        
+        if (G_pp(jj) > G)
+            disp("Invalid Ground Sampling Distance. Crack detection lowered");
+        else 
+            disp("Valid Ground Sampling Distance");
+        end
+        
+        % Calculate width and height of the area covered
+        W_p_pp = 2 * d_insp_p_pp(jj) * tan(horizontal_FOV_p / 2);
+        H_p_pp = 2 * d_insp_p_pp(jj) * tan(vertical_FOV_p / 2);
+        
+        % Calculate the radius of the inspection area
+        rmaj_p_2_pp(jj) = H_p_pp/2 / 1000;
+    else
+        C_pp(jj, :) = NaN;
     end
+
+
 end
 
 Mtar_ni_pp = Mtar_filtered;
@@ -149,6 +181,7 @@ colors = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all
 % colors = [1 0.6 0];
         
 % Print the surface
+figure;
 trisurf(gm, 'FaceVertexCData', colors);
 
 % Initiaslize variables
@@ -157,14 +190,14 @@ inspected_pp = zeros(size(Mtar_ni_pp, 1), 1);
 
 % Evaluate 
 for i = 1:size(Mtar_ni_pp, 1)
-        for j = 1:size(C_pp, 1)
+        for j = 1:size(C, 1)
             % Is the sample within inspection range ?
-            distance_cluster_pp = sqrt((centroid(i, 1) - C_pp(j, 1))^2 + (centroid(i, 2) - C_pp(j, 2))^2 + (centroid(i, 3) - C_pp(j, 3))^2)/1000;
+            distance_cluster_pp = sqrt((centroid(i, 1) - C(j, 1))^2 + (centroid(i, 2) - C(j, 2))^2 + (centroid(i, 3) - C(j, 3))^2)/1000;
             within_range_pp = distance_cluster_pp < rmaj_p_2_pp(j);
             
             % Is the sample inspected with an acceptable angle 
-            dot_product = dot(C_pp(j, 4:6), normal(i, :));
-            mag_v1 = vecnorm(C_pp(j, 4:6), 2);
+            dot_product = dot(C(j, 4:6), normal(i, :));
+            mag_v1 = vecnorm(C(j, 4:6), 2);
             mag_v2 = vecnorm(normal(i, :), 2);
             angle = rad2deg(acos(dot_product / (mag_v1 * mag_v2)));
             isWithinAngleThreshold = angle <= alpha_t;
@@ -187,35 +220,35 @@ for i = 1:size(Mtar_ni_pp, 1)
     if in_loop_printer
         disp([num2str(count_pp), ' samples out of ', num2str(length(Mtar_ni_pp)), ' are still not inspected']);
     end
-    % Plot the surface
-    if (in_loop_plotter)
-        trisurf(gm, 'FaceVertexCData', colors);
-        axis equal;
-        hold on;
-        scatter3(C_pp(:,1), C_pp(:,2), C_pp(:,3), 50, "o", "r", 'filled');  % Plot medoids
-        % Plot the ellipses around each centroid
-        theta = linspace(0, 2*pi, 100);
-        for iii = 1:size(C_pp, 1)
-            % Centroid location
-            cx_pp = C_pp(iii, 1);
-            cy_pp = C_pp(iii, 2);
-            cz_pp = C_pp(iii, 3);
+end
+% Plot the surface
+if (in_loop_plotter)
+    trisurf(gm, 'FaceVertexCData', colors);
+    axis equal;
+    hold on;
+    scatter3(C(:,1), C(:,2), C(:,3), 50, "o", "r", 'filled');  % Plot medoids
+    % Plot the ellipses around each centroid
+    theta = linspace(0, 2*pi, 100);
+    for iii = 1:size(C, 1)
+        % Centroid location
+        cx_pp = C(iii, 1);
+        cy_pp = C(iii, 2);
+        cz_pp = C(iii, 3);
 
-            % Directional information
-            nx_pp = C_pp(iii, 4);
-            ny_pp = C_pp(iii, 5);
-            nz_pp = C_pp(iii, 6);
-            c_normal_pp = [nx_pp, ny_pp, nz_pp];
+        % Directional information
+        nx_pp = C(iii, 4);
+        ny_pp = C(iii, 5);
+        nz_pp = C(iii, 6);
+        c_normal_pp = [nx_pp, ny_pp, nz_pp];
 
-            % Ellipse in 3D space
-            [ex_pp, ey_pp, ez_pp] = ellipsoidPoints(cx_pp, cy_pp, cz_pp, rmaj_p_2_pp(iii)*1e3, rmaj_p_2_pp(iii)*1e3, c_normal_pp);
+        % Ellipse in 3D space
+        [ex_pp, ey_pp, ez_pp] = ellipsoidPoints(cx_pp, cy_pp, cz_pp, rmaj_p_2_pp(iii)*1e3, rmaj_p_2_pp(iii)*1e3, c_normal_pp);
 
-            % Plot the ellipse
-            plot3(ex_pp, ey_pp, ez_pp, 'r', 'LineWidth', 1);
-        end
-        hold off;
-        pause(0.001);
+        % Plot the ellipse
+        plot3(ex_pp, ey_pp, ez_pp, 'r', 'LineWidth', 1);
     end
+    hold off;
+    pause(0.001);
 end
 
 function [intersect, t, u, v, xcoor] = rayTriangleIntersection(rayOrigin, rayDirection, V1, V2, V3)

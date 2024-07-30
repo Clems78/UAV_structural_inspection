@@ -73,7 +73,10 @@ for jj = 1:length(waypoints_gt_pp)
     
     % Extract the heading (yaw) angle
     heading = euler(1);
+
     heading_transported = -heading + pi/2;
+    % heading_transported = -heading + pi/2;
+
     
     % Optionally, convert to degrees if needed
     heading_deg = rad2deg(heading_transported);
@@ -101,7 +104,7 @@ for jj = 1:length(waypoints_gt_pp)
     rayOrigin = camera_location_gt;
     rayDirection = camera_direction;
     rayDirectionSto(jj, :) = camera_direction;
-    
+
     % Using Phased Array System Toolbox for ray tracing
     % Intersection with triangulated surface
     [intersect, t, u, v, xcoor] = rayTriangleIntersection(rayOrigin, rayDirection, gm.Points(gm.ConnectivityList(:, 1), :),gm.Points(gm.ConnectivityList(:, 2), :), gm.Points(gm.ConnectivityList(:, 3), :));
@@ -144,6 +147,9 @@ for jj = 1:length(waypoints_gt_pp)
 end
 
 rayDirectionSto = [[0, 0, 1];rayDirectionSto; [0, 0, 1]];
+
+heading_sto_pp = -heading_sto + 180;
+heading_sto_pp =[TOAL_ros_heading; heading_sto_pp; TOAL_ros_heading ] 
 
 
 waypoints_gt = waypoints_gt(:, 1:4);

@@ -1,4 +1,5 @@
 %Plot gt viewpoints
+plot_ellipse = false;
 
 figure(1);
 axis equal;
@@ -24,3 +25,25 @@ end
 quiver3(camera_location_gt_plot(:,1), camera_location_gt_plot(:,2), camera_location_gt_plot(:,3), ...
         rayDirectionSto(:,1), rayDirectionSto(:,2), rayDirectionSto(:,3), ...
         'r', 'LineWidth', 3);
+if plot_ellipse
+    % Plot the ellipses around each centroid
+    theta = linspace(0, 2*pi, 100);
+    for iii = 1:size(C_pp, 1)
+        % Centroid location
+        cx_pp = C_pp(iii, 1);
+    s    cy_pp = C_pp(iii, 2);
+        cz_pp = C_pp(iii, 3);
+
+        % Directional information
+        nx_pp = C_pp(iii, 4);
+        ny_pp = C_pp(iii, 5);
+        nz_pp = C_pp(iii, 6);
+        c_normal_pp = [nx_pp, ny_pp, nz_pp];
+
+        % Ellipse in 3D space
+        [ex_pp, ey_pp, ez_pp] = ellipsoidPoints(cx_pp, cy_pp, cz_pp, rmaj_p_2_pp(iii)*1e3, rmaj_p_2_pp(iii)*1e3, c_normal_pp);
+
+        % Plot the ellipse
+        plot3(ex_pp, ey_pp, ez_pp, 'r', 'LineWidth', 1);
+    end
+end

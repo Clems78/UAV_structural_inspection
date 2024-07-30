@@ -16,7 +16,7 @@ start_point_pp = [0, 0, 0, 0, 0, 0, 1];
 end_point_pp = [0, 0, 0, 0, 0, 0, 1];
 
 % Define the path to the CSV file
-filePath = 'gt_pose_2024-07-30_01-09-16.csv';
+filePath = 'gt_pose_2024-07-30_19-52-37.csv';
 
 % Read the CSV file
 data = readtable(filePath);

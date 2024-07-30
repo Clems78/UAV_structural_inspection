@@ -8,13 +8,25 @@ rmaj_fixed_pp = false;
 % Average error of viewpoints position and orientation
 waypoints_ros_pp = waypoints_ros;
 waypoints_ros_pp(:, 3) = -waypoints_ros(:, 3);
-pose_error = abs(waypoints_gt - waypoints_ros_pp);
 
-for i = 1:size(pose_error, 1)
-    if (pose_error(i, 4) >= 360)
-        pose_error(i, 4) = pose_error(i, 4) - 360;
+for j = 1:size(waypoints_ros_pp, 1)
+    if (waypoints_ros_pp(j, 4) < 0)
+        waypoints_ros_pp(j, 4) = waypoints_ros_pp(j, 4) + 360;
+    end
+    if (waypoints_gt(j, 4) < 0)
+        waypoints_gt(j, 4) = waypoints_gt(j, 4) + 360;
     end
 end
+
+pose_error = abs(waypoints_gt - waypoints_ros_pp);
+
+
+
+% for i = 1:size(pose_error, 1)
+%     if (pose_error(i, 4) >= 360)
+%         pose_error(i, 4) = pose_error(i, 4) - 360;
+%     end
+% end
 
 average_pose_error = mean(pose_error, 1);
 

@@ -33,7 +33,7 @@ z_transport = 5000;
 % Is equal to the threshold to reach a waypoint
 a = 200; % semi-axes lenght a (mm) major axis // to surface
 b = 200; % semi-axes lenght b (mm) minor axis // to surface
-c = 2000; % semi-axes lenght c (mm) axis perpendicular to surface
+c = 200; % semi-axes lenght c (mm) axis perpendicular to surface
 
 % Detection parameters
 alpha_t = 69; % max allowable angle between the camera's optical axis and the surface normal (degree)

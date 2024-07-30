@@ -18,6 +18,14 @@ end
 
 average_pose_error = mean(pose_error, 1);
 
+disp(['Average x pose error: ', num2str(round(average_pose_error(1), 3)), ' m']);
+disp(['Average y pose error: ', num2str(round(average_pose_error(2), 3)), ' m']);
+disp(['Average z pose error: ', num2str(round(average_pose_error(3), 3)), ' m']);
+disp(['Average heading error: ', num2str(round(average_pose_error(4), 1)), ' deg']);
+
+
+
+
 
 % GSD 
 

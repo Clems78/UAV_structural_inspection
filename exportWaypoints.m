@@ -10,14 +10,14 @@ order_waypoints_c = order_waypoints_1(1, 2:(length(order_waypoints_1)-1));
 
 for i = 1: length(order_waypoints_c)
     % waypointsOrdered(i, :) = waypoints(order_waypoints(1, i), :);
-    C_ordered(i, :) = C_temp(order_waypoints_c(1, i), 4:6)
+    C_ordered(i, :) = C_temp(order_waypoints_c(1, i), 4:6);
 end
 
-C_ordered = C_ordered(1:(length(C_ordered)-1), :)
+C_ordered = C_ordered(1:(length(C_ordered)-1), :);
 
 % Extract the direction vectors
 % directions_export = C(:, 4:6);
-directions_export = C_ordered
+directions_export = C_ordered;
 
 % directions_export = [0, -1, 0 ];
 
@@ -43,7 +43,7 @@ end
 headings_export = [TOAL_ros_heading; headings_export; TOAL_ros_heading];
 
 % Display the headings
-disp(headings_export);
+% disp(headings_export);
 
 wp_temp = waypointsOrdered_1(2:(length(waypointsOrdered_1)-1), :);
 wp_temp(:, 1) = -wp_temp(:, 1);
@@ -53,7 +53,7 @@ wp_temp = wp_temp / 1000;
 waypoints_ros = [TOAL_ros_pose; wp_temp; TOAL_ros_pose];
 
 
-waypoints_ros = [waypoints_ros, headings_export];
+waypoints_ros = [waypoints_ros, headings_export]
 
 % Choose the file path
 file_path = 'waypoints_ros.txt';

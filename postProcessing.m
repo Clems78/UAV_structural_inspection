@@ -1,7 +1,8 @@
 % Coverage and overlap calculation:
 rmaj_fixed_pp = false;
+disp("GT results");
 [no_overlap_pp, overlapped_twice_pp, overlapped_thrice_pp, overlapped_elmts_pp, area_overlaped_pp, area_not_cov_pp] = overlapCalculation(nodes_list,ground_node, Mtar_ni_pp, C_pp, centroid, rmaj_p_2_pp, rmaj_fixed_pp, normal, alpha_t, points, area_structure, inspected_pp);
-
+disp("Theory results");
 % Coverage and overlap of the origin calculation
 [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj_p_2, rmaj_fixed, normal, alpha_t, points, area_structure, inspected);
 

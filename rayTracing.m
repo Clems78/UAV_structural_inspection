@@ -16,7 +16,7 @@ start_point_pp = [0, 0, 0, 0, 0, 0, 1];
 end_point_pp = [0, 0, 0, 0, 0, 0, 1];
 
 % Define the path to the CSV file
-filePath = 'gt_pose_2024-07-30_19-52-37.csv';
+filePath = 'gt_pose_2024-07-30_22-34-29.csv';
 
 % Read the CSV file
 data = readtable(filePath);
@@ -24,6 +24,8 @@ data = readtable(filePath);
 % Extract numeric data, skipping the first row and first column (header and Waypoint)
 waypoints_gt = table2array(data(:, 2:end));
 waypoints_gt_pp = waypoints_gt(2:length(waypoints_gt)-1, :);
+
+waypoints_gt_pp(:, 1) = -waypoints_gt_pp(:, 1);
 
 % Display the extracted data
 disp(waypoints_gt_pp);
@@ -56,6 +58,7 @@ d_insp_p_pp = zeros(length(waypoints_gt_pp), 1);
 G_pp = zeros(length(waypoints_gt_pp), 1);
 on_target = zeros(length(waypoints_gt_pp), 1);
 heading_sto =zeros(length(waypoints_gt_pp), 1);
+rayDirectionSto = zeros(length(waypoints_gt_pp), 3);
 
 
 for jj = 1:length(waypoints_gt_pp)
@@ -74,8 +77,8 @@ for jj = 1:length(waypoints_gt_pp)
     
     % Optionally, convert to degrees if needed
     heading_deg = rad2deg(heading_transported);
-    disp('Heading (yaw) in degrees:');
-    disp(heading_deg);
+    % disp('Heading (yaw) in degrees:');
+    % disp(heading_deg);
     heading_sto(jj, 1) = heading_deg;
     
     % Update the Euler angles with the new heading
@@ -85,7 +88,7 @@ for jj = 1:length(waypoints_gt_pp)
     adjusted_q = eul2quat(euler);
     
     % Define the camera position and orientation
-    camera_location_gt = [waypoints_gt_pp(jj, 1)*1e3 + camera_location(1), waypoints_gt_pp(jj, 2) *1e3 + camera_location(2), waypoints_gt_pp(jj, 3) *1e3 + camera_location(3)]
+    camera_location_gt = [waypoints_gt_pp(jj, 1)*1e3 + camera_location(1), waypoints_gt_pp(jj, 2) *1e3 + camera_location(2), waypoints_gt_pp(jj, 3) *1e3 + camera_location(3)];
     
     % Convert quaternion to rotation matrix
     R = quat2rotm(adjusted_q);
@@ -97,13 +100,14 @@ for jj = 1:length(waypoints_gt_pp)
     % Create a ray from the camera position in the camera direction
     rayOrigin = camera_location_gt;
     rayDirection = camera_direction;
+    rayDirectionSto(jj, :) = camera_direction;
     
     % Using Phased Array System Toolbox for ray tracing
     % Intersection with triangulated surface
     [intersect, t, u, v, xcoor] = rayTriangleIntersection(rayOrigin, rayDirection, gm.Points(gm.ConnectivityList(:, 1), :),gm.Points(gm.ConnectivityList(:, 2), :), gm.Points(gm.ConnectivityList(:, 3), :));
     
     % Find the first intersection point
-    intersection_point = xcoor(intersect, :)
+    intersection_point = xcoor(intersect, :);
 
     if ~isempty(intersection_point)
         on_target(jj, 1) = 1;
@@ -114,63 +118,33 @@ for jj = 1:length(waypoints_gt_pp)
         inspection_distance(ii, :) = norm(intersection_point(ii,:) - camera_location_gt);
         end
         
-        [d_insp_p_pp(jj), min_index] = min(inspection_distance) % Inspection distance
-        
-        C_pp(jj, :) = [intersection_point(min_index, :), -rayDirection];
-        
-        % Display the results
-        % % disp('Intersection Point:');
-        % disp(intersection_point);
-        
-        % disp('Inspection Distance:');
-        % disp(d_insp_p_pp);
-        
-        % GSD calculation
-        G_pp(jj) = d_insp_p_pp(jj) * sensor_height / (f * Ih);
-        
-        if (G_pp(jj) > G)
-            disp("Invalid Ground Sampling Distance. Crack detection lowered");
-        else 
-            disp("Valid Ground Sampling Distance");
-        end
-        
-        % Calculate width and height of the area covered
-        W_p_pp = 2 * d_insp_p_pp(jj) * tan(horizontal_FOV_p / 2);
-        H_p_pp = 2 * d_insp_p_pp(jj) * tan(vertical_FOV_p / 2);
-        
-        % Calculate the radius of the inspection area
-        rmaj_p_2_pp(jj) = H_p_pp/2 / 1000;
-    
         [d_insp_p_pp(jj), min_index] = min(inspection_distance); % Inspection distance
         
         C_pp(jj, :) = [intersection_point(min_index, :), -rayDirection];
-        
-        % Display the results
-        % % disp('Intersection Point:');
-        % disp(intersection_point);
-        
-        % disp('Inspection Distance:');
-        % disp(d_insp_p_pp);
-        
+
         % GSD calculation
         G_pp(jj) = d_insp_p_pp(jj) * sensor_height / (f * Ih);
-        
-        if (G_pp(jj) > G)
-            disp("Invalid Ground Sampling Distance. Crack detection lowered");
-        else 
-            disp("Valid Ground Sampling Distance");
-        end
-        
+
+        % if (G_pp(jj) > GSD)
+        %     disp("Invalid Ground Sampling Distance. Crack detection lowered");
+        % else 
+        %     disp("Valid Ground Sampling Distance");
+        % end
+
         % Calculate width and height of the area covered
         W_p_pp = 2 * d_insp_p_pp(jj) * tan(horizontal_FOV_p / 2);
         H_p_pp = 2 * d_insp_p_pp(jj) * tan(vertical_FOV_p / 2);
-        
+
         % Calculate the radius of the inspection area
         rmaj_p_2_pp(jj) = H_p_pp/2 / 1000;
+
     else
         C_pp(jj, :) = NaN;
     end
 end
+
+rayDirectionSto = [[0, 0, 1];rayDirectionSto; [0, 0, 1]];
+
 
 waypoints_gt = waypoints_gt(:, 1:4);
 waypoints_gt(1, 4) = TOAL_ros_heading;
@@ -254,6 +228,11 @@ if (in_loop_plotter)
     hold off;
     pause(0.001);
 end
+
+% figure(3);
+% hold on
+% scatter3(waypoints_gt(:,1)*1e3, waypoints_gt(:,2)*1e3, waypoints_gt(:,3)*1e3, 20, "o", "g", 'filled'); % Plot the viewpoints
+
 
 function [intersect, t, u, v, xcoor] = rayTriangleIntersection(rayOrigin, rayDirection, V1, V2, V3)
     % Helper function for ray-triangle intersection

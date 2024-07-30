@@ -105,16 +105,6 @@ if (traj_plotter && trajGeneration)
 
 end
 
-% Overlap plotter
-if overlap_calculation
-    % Disp results
-    disp(['Overlap: ', num2str(area_overlaped/area_structure * 100), ' %']);
-    disp([num2str(no_overlap), '% of the polygons are inspected exactly once']);
-    disp([num2str(overlapped_elmts), '% of the polygons are inspected more than once']);
-    disp([num2str(overlapped_twice), '% of the polygons are inspected twice']);
-    disp([num2str(overlapped_thrice), '% of the polygons are inspected thrice']);  
-end
-
 if (overlap_plotter && overlap_calculation)
     % Category labels for the bar plot
     categories = {'No Overlap', 'Overlapped Elements', 'Overlapped Twice', 'Overlapped Thrice'};
@@ -131,10 +121,3 @@ if (overlap_plotter && overlap_calculation)
     % Set the y-axis limits to [0, 100] to show percentages clearly
     ylim([0 100]);
 end
-
-
-% % Get the handle of the current figure
-% hFig = gcf;
-% 
-% % Create a copy of the figure
-% hFigCopy = copyobj(hFig, 0);

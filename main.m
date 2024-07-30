@@ -130,7 +130,8 @@ end
 
 % Overlap analysis
 if (overlap_calculation)
-    overlapCalculation;
+    rmaj_fixed = true;
+    [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj_p_2, rmaj_fixed, normal, alpha_t, points, area_structure);
 end  
 
 % Plotting 

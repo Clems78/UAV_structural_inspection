@@ -30,7 +30,7 @@ for i = 1:length(nodes_list)
 end
 
 % Get the number of clusters
-k_est = round(area_structure / s_p_2);
+k_est = round(area_structure / s_p) ;
 
 if (k_est == 0)
     k_est = 1;

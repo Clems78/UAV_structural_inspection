@@ -40,7 +40,7 @@ if (ellipsoid_plotter)
         c_normal = [nx, ny, nz];
     
         % Ellipse in 3D space
-        [ex, ey, ez] = ellipsoidPoints(cx, cy, cz, rmaj_p_2*1e3, rmaj_p_2*1e3, c_normal);
+        [ex, ey, ez] = ellipsoidPoints(cx, cy, cz, rmaj_main*1e3, rmaj_main*1e3, c_normal);
     
         % Plot the ellipse
         plot3(ex, ey, ez, 'r', 'LineWidth', 0.5);

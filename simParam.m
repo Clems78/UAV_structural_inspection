@@ -1,7 +1,4 @@
 % Simulation Parameters
-% rmaj = 0.48
-% rmin = 0.048 
-% ==> Best results of clusters positionning somehow !
 
 % Camera settings
 sensor_width = 35.7; % camera frame width (mm) 
@@ -61,7 +58,10 @@ s = pi() * rmaj * rmin;
 delta_theta = 2; % Error between the actual orientation of the drone and the desired one
 d_insp_p = (d_insp - c) * cos(deg2rad(delta_theta)); % updated inspection distance 
 theta = rad2deg(atan(Ih/f)); % Half the fov
-theta_p = theta - delta_theta; % new theta 
+
+% theta_p = theta - delta_theta; % new theta 
+theta_p = (rad2deg(vertical_FOV))/2 - delta_theta;
+
 fov = 2 * theta_p;
 
 horizontal_FOV_p = horizontal_FOV - deg2rad(delta_theta);
@@ -91,7 +91,8 @@ eqn_2 = df_x == 0;
 x_min = double(solve(eqn_2, x));% the xq_min is obtained for x_min 
 xq_min = double(subs(xq, x, x_min));
 
-rmaj_p = d_insp_p * tan(deg2rad(theta_p)) - sqrt(a^2 + (c^2) * tan(deg2rad(theta_p))^2 );
+rmaj_p = (d_insp_p/1000) * tan(deg2rad(theta_p)) - sqrt((a/1000)^2 + ((c/1000)^2) * (tan(deg2rad(theta_p)))^2 )
+
 s_p = pi() * rmaj_p^2;  
 
 

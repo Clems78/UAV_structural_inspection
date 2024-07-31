@@ -47,7 +47,7 @@ if one_face_filtering
 end
 
 % Define the custom distance function with additional parameters using an anonymous function
-customDistFun = @(ZI, ZJ) distFun(ZI, ZJ, rmaj_p_2, rmaj_p_2, alpha_t); % with positionning uncertainty
+customDistFun = @(ZI, ZJ) distFun(ZI, ZJ, rmaj_main, rmaj_main, alpha_t); % with positionning uncertainty
 
 within_range = [length(k), 1];
 inspected = zeros(size(Mtar_filtered, 1), 1);
@@ -108,7 +108,7 @@ while (~all_inspected)
         for j = 1:size(C, 1)
             % Is the sample within inspection range ?
             distance_cluster = sqrt((centroid(i, 1) - C(j, 1))^2 + (centroid(i, 2) - C(j, 2))^2 + (centroid(i, 3) - C(j, 3))^2)/1000;
-            within_range = distance_cluster < rmaj_p_2;
+            within_range = distance_cluster < rmaj_main;
             
             % Is the sample inspected with an acceptable angle 
             dot_product = dot(C(j, 4:6), normal(i, :));
@@ -167,7 +167,7 @@ while (~all_inspected)
             c_normal = [nx, ny, nz];
 
             % Ellipse in 3D space
-            [ex, ey, ez] = ellipsoidPoints(cx, cy, cz, rmaj_p_2*1e3, rmaj_p_2*1e3, c_normal);
+            [ex, ey, ez] = ellipsoidPoints(cx, cy, cz, rmaj_main*1e3, rmaj_main*1e3, c_normal);
 
             % Plot the ellipse
             plot3(ex, ey, ez, 'r', 'LineWidth', 1);

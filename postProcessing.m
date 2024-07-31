@@ -1,7 +1,7 @@
 % Coverage and overlap calculation:
 rmaj_fixed_pp = false;
 cprintf('Red', '\nTheory results\n');
-[no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj_p_2, rmaj_fixed, normal, alpha_t, points, area_structure, inspected);
+[no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj_main, rmaj_fixed, normal, alpha_t, points, area_structure, inspected);
 
 cprintf('Red', '\nGT results\n');
 [no_overlap_pp, overlapped_twice_pp, overlapped_thrice_pp, overlapped_elmts_pp, area_overlaped_pp, area_not_cov_pp] = overlapCalculation(nodes_list,ground_node, Mtar_ni_pp, C_pp, centroid, rmaj_p_2_pp, rmaj_fixed_pp, normal, alpha_t, points, area_structure, inspected_pp);
@@ -11,6 +11,17 @@ waypoints_ros_pp = waypoints_ros;
 waypoints_ros_pp(:, 3) = -waypoints_ros(:, 3);
 dist_error = zeros(size(waypoints_ros_pp, 1), 1);
 dist_error_medoids = zeros(size(C_pp, 1), 1);
+
+% Reorder C 
+C_ordered = zeros(size(C, 1), size(C, 2));
+
+order_C_1 = order_waypoints_1';
+order_C_1 = order_C_1(2:(size(order_C_1, 1)-1), size(order_C_1, 2));
+order_C_1(:) = order_C_1(:) - 1;
+
+for ii = 1:size(C, 1)
+    C_ordered(ii, :) = C(order_C_1(ii), :);
+end
 
 
 
@@ -32,9 +43,9 @@ end
 
 for i = 1:size(C_pp, 1)
 
-    dist_error_medoids(i) = sqrt((C(i, 1) - C_pp(i, 1))^2 ...
-    + (C(i, 2) - C_pp(i, 2))^2 ...
-    + (C(i, 3) - C_pp(i, 3))^2 );
+    dist_error_medoids(i) = sqrt((C_ordered(i, 1) - C_pp(i, 1))^2 ...
+    + (C_ordered(i, 2) - C_pp(i, 2))^2 ...
+    + (C_ordered(i, 3) - C_pp(i, 3))^2 );
 end
 
 

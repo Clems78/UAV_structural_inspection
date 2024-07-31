@@ -7,6 +7,7 @@
 clc;
 close all;
 
+
 vp_calculation = true;
 
 if vp_calculation
@@ -41,6 +42,7 @@ pause_time = 0.001;
 
 % Loading simulation parameters
 simParam;
+rmaj_main = rmaj_p;
 
 % Viewpoints Generation
 if vp_calculation
@@ -131,7 +133,7 @@ end
 % Overlap analysis
 if (overlap_calculation)
     rmaj_fixed = true;
-    [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj_p_2, rmaj_fixed, normal, alpha_t, points, area_structure, inspected);
+    [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj_main, rmaj_fixed, normal, alpha_t, points, area_structure, inspected);
 end  
 
 % Plotting 

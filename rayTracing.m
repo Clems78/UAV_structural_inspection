@@ -142,7 +142,7 @@ Mtar_ni_pp = Mtar_filtered;
 % Create a vector to store the color of each triangle
 colors_pp = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all triangles
 
-filtered_indices_pp = find(Mtar(:, 3) > z_threshold);
+filtered_indices_pp = find(Mtar(:, 3) > z_min_threshold & Mtar(:, 3) < z_max_threshold);
 
         
 % Print the surface

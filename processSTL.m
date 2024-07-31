@@ -3,8 +3,6 @@
 cprintf('Red', 'Clustering starts...\n');
 tic;
 
-one_face_filtering = false;
-
 % Import STL
 [gm, fileformat, attributes, solidID] = stlread(file_name);
 
@@ -30,20 +28,17 @@ centroid = incenter(gm);
 normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
-min(Mtar(:, 3))
-Mtar_filtered_1 = Mtar((Mtar(:, 3) > min(Mtar(:, 3))+1), :);
-Mtar_filtered = Mtar_filtered_1((Mtar_filtered_1(:, 3) < max(Mtar_filtered_1(:, 3))-1), :);
 
-    % length(Mtar_filtered)
+% Define the threshold for the z-coordinate on the viewpoints generation
+height = max(Mtar(:, 3)) - min(Mtar(:, 3));
+z_min_threshold = min(Mtar(:, 3)) + height * 0.1 ;
+z_max_threshold = max(Mtar(:, 3)) - height * 0.1;
 
-if one_face_filtering
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 3) < max(Mtar_filtered(:, 3))-1), :);
-    
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 2) < max(Mtar_filtered(:, 2))-0.1), :);
-    
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) < max(Mtar_filtered(:, 1))-1), :);
-    Mtar_filtered = Mtar_filtered((Mtar_filtered(:, 1) > min(Mtar_filtered(:, 1))+1), :);
-
+if (z_limit_vp_generation)
+    % Logical indexing to filter rows where the z-coordinate (3rd column) is higher than the threshold
+    Mtar_filtered = Mtar(Mtar(:, 3) > z_min_threshold & Mtar(:, 3) < z_max_threshold, :);
+else
+    Mtar_filtered = Mtar;
 end
 
 % Define the custom distance function with additional parameters using an anonymous function
@@ -56,6 +51,8 @@ all_inspected = false;
 % Create a vector to store the color of each triangle
 colors = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all triangles
 % colors = [1 0.6 0];
+% Map filtered indices back to the original structure
+filtered_indices = find(Mtar(:, 3) > z_min_threshold & Mtar(:, 3) < z_max_threshold);
         
 % Print the surface
 trisurf(gm, 'FaceVertexCData', colors);
@@ -107,27 +104,25 @@ while (~all_inspected)
     for i = 1:size(Mtar_ni, 1)
         for j = 1:size(C, 1)
             % Is the sample within inspection range ?
-            distance_cluster = sqrt((centroid(i, 1) - C(j, 1))^2 + (centroid(i, 2) - C(j, 2))^2 + (centroid(i, 3) - C(j, 3))^2)/1000;
+            distance_cluster = sqrt((Mtar_ni(i, 1) - C(j, 1))^2 + (Mtar_ni(i, 2) - C(j, 2))^2 + (Mtar_ni(i, 3) - C(j, 3))^2)/1000;
             within_range = distance_cluster < rmaj_main;
             
             % Is the sample inspected with an acceptable angle 
-            dot_product = dot(C(j, 4:6), normal(i, :));
+            dot_product = dot(C(j, 4:6), Mtar_ni(i, 4:6));
             mag_v1 = vecnorm(C(j, 4:6), 2);
-            mag_v2 = vecnorm(normal(i, :), 2);
+            mag_v2 = vecnorm(Mtar_ni(i, 4:6), 2);
             angle = rad2deg(acos(dot_product / (mag_v1 * mag_v2)));
             isWithinAngleThreshold = angle <= alpha_t;
             
             if within_range && isWithinAngleThreshold
                 inspected(i, 1) = true;
-                colors(i, :) = [0, 0.8, 0];
-                % disp("Sample inspected !");
+                colors(filtered_indices(i), :) = [0, 0.8, 0];  % Update color for the original index                % disp("Sample inspected !");
                 % keep_rows = ~((1:size(Mtar_ni, 1)) == i);
                 % Mtar_ni = Mtar_ni(i ~= 1:size(Mtar_ni, 1), :);  % Logical indexing for removal
                 break;
             else
                 inspected(i, 1) = false;
-                colors(i, :) = [1 0.6 0] ;
-                % disp("Sample not inspected !");
+                colors(filtered_indices(i), :) = [1, 0.6, 0];  % Update color for the original index                % disp("Sample not inspected !");
             end             
             % disp("continuing ?  ")
         end

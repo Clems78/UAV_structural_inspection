@@ -16,7 +16,7 @@ start_point_pp = [0, 0, 0, 0, 0, 0, 1];
 end_point_pp = [0, 0, 0, 0, 0, 0, 1];
 
 % Define the path to the CSV file
-filePath = 'gt_pose_2024-07-31_17-46-50.csv';
+filePath = 'gt_pose_2024-07-31_18-28-57.csv';
 
 % Read the CSV file
 data = readtable(filePath);
@@ -140,12 +140,14 @@ waypoints_gt(2:(size(waypoints_gt, 1)-1), 4) = heading_sto;
 Mtar_ni_pp = Mtar_filtered;
 
 % Create a vector to store the color of each triangle
-colors = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all triangles
-% colors = [1 0.6 0];
+colors_pp = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all triangles
+
+filtered_indices_pp = find(Mtar(:, 3) > z_threshold);
+
         
 % Print the surface
 figure;
-trisurf(gm, 'FaceVertexCData', colors);
+trisurf(gm, 'FaceVertexCData', colors_pp);
 
 % Initiaslize variables
 within_range_pp = [length(C_pp), 1];
@@ -155,26 +157,26 @@ inspected_pp = zeros(size(Mtar_ni_pp, 1), 1);
 for i = 1:size(Mtar_ni_pp, 1)
         for j = 1:size(C_pp, 1)
             % Is the sample within inspection range ?
-            distance_cluster_pp = sqrt((centroid(i, 1) - C_pp(j, 1))^2 + (centroid(i, 2) - C_pp(j, 2))^2 + (centroid(i, 3) - C_pp(j, 3))^2)/1000;
+            distance_cluster_pp = sqrt((Mtar_ni_pp(i, 1) - C_pp(j, 1))^2 + (Mtar_ni_pp(i, 2) - C_pp(j, 2))^2 + (Mtar_ni_pp(i, 3) - C_pp(j, 3))^2)/1000;
             within_range_pp = distance_cluster_pp < rmaj_p_2_pp(j);
             
             % Is the sample inspected with an acceptable angle 
-            dot_product = dot(C_pp(j, 4:6), normal(i, :));
+            dot_product = dot(C_pp(j, 4:6), Mtar_ni_pp(i, 4:6));
             mag_v1 = vecnorm(C_pp(j, 4:6), 2);
-            mag_v2 = vecnorm(normal(i, :), 2);
+            mag_v2 = vecnorm(Mtar_ni_pp(i, 4:6), 2);
             angle = rad2deg(acos(dot_product / (mag_v1 * mag_v2)));
             isWithinAngleThreshold = angle <= alpha_t;
             
             if within_range_pp && isWithinAngleThreshold
                 inspected_pp(i, 1) = true;
-                colors(i, :) = [0, 0.8, 0];
+                colors_pp(filtered_indices_pp(i), :) = [0, 0.8, 0];  % Update color for the original index                % disp("Sample inspected !");
                 disp("Sample inspected !");
                 % keep_rows = ~((1:size(Mtar_ni, 1)) == i);
                 % Mtar_ni = Mtar_ni(i ~= 1:size(Mtar_ni, 1), :);  % Logical indexing for removal
                 break;
             else
                 inspected_pp(i, 1) = false;
-                colors(i, :) = [1 0.6 0] ;
+                colors_pp(filtered_indices_pp(i), :) = [1, 0.6, 0];  % Update color for the original index                % disp("Sample inspected !");
                 % disp("Sample not inspected !");
             end             
             % disp("continuing ?  ")
@@ -186,7 +188,7 @@ for i = 1:size(Mtar_ni_pp, 1)
 end
 % Plot the surface
 if (in_loop_plotter)
-    trisurf(gm, 'FaceVertexCData', colors);
+    trisurf(gm, 'FaceVertexCData', colors_pp);
     axis equal;
     hold on;
     scatter3(C_pp(:,1), C_pp(:,2), C_pp(:,3), 50, "o", "r", 'filled');  % Plot medoids

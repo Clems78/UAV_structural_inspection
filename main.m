@@ -7,13 +7,14 @@
 clc;
 close all;
 
-
 vp_calculation = true;
 
 if vp_calculation
 clear;
 vp_calculation = true;
 end
+
+z_limit_vp_generation = true; %limit the inspection on the z axis (tuning available in processSTL)
 
 % Import STL
 file_name = 'cylinder_gz.stl';

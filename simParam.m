@@ -28,9 +28,9 @@ z_transport = 5000;
 
 % Ellipsoid representing the uav error in positioning 
 % Is equal to the threshold to reach a waypoint
-a = 300; % semi-axes lenght a (mm) major axis // to surface
-b = 100; % semi-axes lenght b (mm) minor axis // to surface
-c = 100; % semi-axes lenght c (mm) axis perpendicular to surface
+a = 500; % semi-axes lenght a (mm) major axis // to surface
+b = 150; % semi-axes lenght b (mm) minor axis // to surface
+c = 150; % semi-axes lenght c (mm) axis perpendicular to surface
 
 % Detection parameters
 alpha_t = 60; % max allowable angle between the camera's optical axis and the surface normal (degree)

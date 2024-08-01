@@ -12,6 +12,7 @@ axis equal;
 hold on;
 scatter3(C(:,1), C(:,2), C(:,3), 50, "o", "r", 'filled');  % Plot medoids
 
+
 if (viewpoints_plotter)
     scatter3(viewpoints(:,1), viewpoints(:,2), viewpoints(:,3), 20, "o", "b", 'filled'); % Plot the viewpoints
     scatter3(waypoints(:,1), waypoints(:,2), waypoints(:,3), 50, "o", "m", 'filled');
@@ -50,6 +51,8 @@ end
 if strcmp(obj, 'comparison')
     hFig = gcf;
     hFigCopy = copyobj(hFig, 0);
+    % Store the handle in the base workspace
+    assignin('base', 'hFigCopy', hFigCopy);
 end
 
 % TSP ploter
@@ -70,9 +73,11 @@ if (tsp_plotter && tsp)
             hold on;
             hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
             highlight(hGraph,Gsol,'LineStyle','-');
-            drawnow;
             title('Inspection optimised for mission duration');
-            figure(3);
+            drawnow;
+            hold off;
+            hFigCopy = evalin('base', 'hFigCopy');
+            figure(hFigCopy);
             hold on;
             hGraph_2 = plot(G_2,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
             highlight(hGraph_2,Gsol_2,'LineStyle','-');
@@ -97,7 +102,7 @@ if (traj_plotter && trajGeneration)
             plot3(position(:,1),position(:,2),position(:,3))
             title('Inspection optimised for mission duration + trajectory');
             % Battery
-            figure(3)
+            figure(hFigCopy)
             hold on;
             plot3(position_2(:,1),position_2(:,2),position_2(:,3))
             title('Inspection optimised for battery consumption + trajectory');

@@ -1,7 +1,7 @@
 %Plot gt viewpoints
 plot_ellipse = false;
 
-figure(1);
+figure(2);
 axis equal;
 hold on;
 scatter3(C_pp(:,1), C_pp(:,2), C_pp(:,3), 50, "o", "g", 'filled');  % Plot medoids

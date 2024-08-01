@@ -49,6 +49,7 @@ end
 
 % Print results 
 pose_error = abs(waypoints_gt - waypoints_ros_pp);
+pose_error_2 = waypoints_ros_pp - waypoints_gt
 average_pose_error = mean(pose_error, 1);
 mean_dist_error = mean(dist_error, 1);
 mean_dist_error_medoids = nanmean(dist_error_medoids, 1);

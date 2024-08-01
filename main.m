@@ -29,7 +29,7 @@ tsp = true;
 trajGeneration = false;
 obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
-opti_ratio = 0.45;
+opti_ratio = 0.4;
 
 % Paremeters metrics 
 overlap_calculation = true;

@@ -4,6 +4,7 @@ viewpoints_plotter= true;
 tsp_plotter = true;
 traj_plotter = true;
 overlap_plotter = false;
+tsp =true;
 
 % Plot the surface
 figure(2);
@@ -59,10 +60,13 @@ end
 if (tsp_plotter && tsp)
     switch obj
         case 'duration'
+            figure(2);
+            hold on;
             hGraph = plot(G,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
             highlight(hGraph,Gsol,'LineStyle','-');
-            drawnow;
             title('Inspection optimised for mission duration');
+            drawnow;
+            hold off;
         case 'battery'
             hGraph = plot(G_2,'XData',waypoints(:, 1),'YData',waypoints(:, 2), 'ZData', waypoints(:, 3), 'LineStyle','none','NodeLabel',{}, 'Marker','none', 'LineWidth',3, 'EdgeColor','b');
             highlight(hGraph,Gsol_2,'LineStyle','-');

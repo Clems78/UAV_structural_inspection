@@ -2,13 +2,15 @@
 clc;
 simParam;
 
+ord_wp = order_waypoints_1;
+wpOrdered = waypointsOrdered;
 
 % Create waypoints_ros
 % Assuming C is already defined and has the direction vectors in columns 4 to 6
 % C = [..., direction_x, direction_y, direction_z, ...]
 
 C_ordered = zeros(size(C_temp, 1), 3);
-order_waypoints_c = order_waypoints_2(1, 2:(length(order_waypoints_2)-1));
+order_waypoints_c = ord_wp(1, 2:(length(ord_wp)-1));
 
 for i = 1: length(order_waypoints_c)
     % waypointsOrdered(i, :) = waypoints(order_waypoints(1, i), :);
@@ -47,7 +49,7 @@ headings_export = [TOAL_ros_heading; headings_export; TOAL_ros_heading];
 % Display the headings
 % disp(headings_export);
 
-wp_temp = waypointsOrdered_2(2:(length(waypointsOrdered_2)-1), :);
+wp_temp = wpOrdered(2:(length(wpOrdered)-1), :);
 wp_temp(:, 1) = -wp_temp(:, 1);
 wp_temp(:, 3) = -wp_temp(:, 3);
 wp_temp = wp_temp / 1000;
@@ -58,7 +60,7 @@ waypoints_ros = [TOAL_ros_pose; wp_temp; TOAL_ros_pose];
 waypoints_ros = [waypoints_ros, headings_export]
 
 % Choose the file path
-file_path = 'waypoints_ros_2.txt';
+file_path = 'waypoints_ros.txt';
 
 % Open the file for writing
 fileID = fopen(file_path, 'w');

@@ -38,7 +38,7 @@ Q = 1;                                  % 常系数
 Eta = 1./Distance;                      % 启发函数
 Tau = ones(CityNum+1);                  % (CityNum+1)*(CityNum+1)信息素矩阵  初始化全为1
 Population = ones(AntNum,CityNum+2);           % 路径记录表
-MaxIter = 500;                           % 最大迭代次数
+MaxIter = 300;                           % 最大迭代次数
 bestind = ones(1,CityNum+2);      % 各代最佳路径
 MinDis = zeros(MaxIter,1);              % 各代最佳路径的长度
 

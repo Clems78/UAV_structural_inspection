@@ -23,7 +23,7 @@ Distance = squareform(Distance);
 CityNum=size(City,1)-1; %需求点个数
 
 %% 初始化算法参数
-NIND=500; %A larger population size can explore the search space more thoroughly.
+NIND=1000; %A larger population size can explore the search space more thoroughly.
 MAXGEN=2000; %More iterations allow the algorithm to refine solutions further.
 
 %% 为预分配内存而初始化的0矩阵

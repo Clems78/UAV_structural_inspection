@@ -91,7 +91,7 @@ eqn_2 = df_x == 0;
 x_min = double(solve(eqn_2, x));% the xq_min is obtained for x_min 
 xq_min = double(subs(xq, x, x_min));
 
-rmaj_p = (d_insp_p/1000) * tan(deg2rad(theta_p)) - sqrt((a/1000)^2 + ((c/1000)^2) * (tan(deg2rad(theta_p)))^2 )
+rmaj_p = (d_insp_p/1000) * tan(deg2rad(theta_p)) - sqrt((a/1000)^2 + ((c/1000)^2) * (tan(deg2rad(theta_p)))^2 );
 
 s_p = pi() * rmaj_p^2;  
 

@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = true;
+vp_calculation = false;
 
 if vp_calculation
 clear;
@@ -27,7 +27,7 @@ opt = true; % Updating the input dataset or no
 % Parameters TSP
 tsp = true;
 trajGeneration = false;
-obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
+obj = 'duration'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
 opti_ratio = 0.4;
 
@@ -59,10 +59,10 @@ if tsp
         case 'duration'
             tic
             cprintf('Red', 'TSP optimised for mission duration starts\n');
-            GA;
-            addpath('SA4TSP');
+            % GA;
+            % addpath('SA4TSP');
             % SA;
-            % TSP_s1;
+            TSP_s1;
             TSP_duration = toc;
             cprintf('Red', 'TSP optimised for mission duration done in %f seconds\n', TSP_duration);
             [waypointsOrdered, nb_waypoints_ordered, order_waypoints_1] = waypointsOrderingFun(Gsol, nb_waypoints, waypoints); 

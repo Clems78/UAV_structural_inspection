@@ -34,8 +34,31 @@ lb = zeros(lendist,1); % lower bound of the decision variable
 ub = ones(lendist,1); % upper bound of the decision variable
 
 opts = optimoptions('intlinprog','Display','iter', 'RelativeGapTolerance',1e-2, 'CutGeneration', 'basic', 'IntegerPreprocess', 'none', 'Heuristics', 'advanced');
+
+opts_2 = optimoptions('intlinprog', ...
+    'Display', 'none', ... % No intermediate output
+    'RelativeGapTolerance', 1e-1, ... % Accept solutions with up to 10% relative gap
+    'AbsoluteGapTolerance', 1e-1, ... % Allow larger absolute gap
+    'CutGeneration', 'none', ... % No cut generation
+    'IntegerPreprocess', 'none', ... % Minimal integer preprocessing
+    'Heuristics', 'none', ... % Avoid heuristics
+    'MaxTime', 60, ... % Limit to 60 seconds
+    'MaxNodes', 1e7, ... % Maximum number of nodes
+    'ObjectiveCutOff', Inf, ... % No cutoff on objective
+    'ConstraintTolerance', 1e-3, ... % Higher constraint tolerance
+    'LPMaxIterations', 1e5, ... % Limit LP iterations
+    'LPOptimalityTolerance', 1e-4, ... % Higher LP optimality tolerance
+    'LPPreprocess', 'none', ... % No preprocessing for LP
+    'MaxFeasiblePoints', Inf, ... % No limit on feasible points
+    'NodeSelection', 'minobj', ... % Simpler node selection
+    'ObjectiveImprovementThreshold', 1e-1, ... % Large threshold for objective improvement
+    'OutputFcn', [], ... % No custom output functions
+    'PlotFcn', [], ... % No custom plots
+    'RootLPAlgorithm', 'dual-simplex', ... % Default LP algorithm
+    'RootLPMaxIterations', 1e5 ... % Max iterations for root LP
+);
 % opts = optimoptions('ga','Display','iter');
-[x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
+[x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts_2);
 % [x_tsp,costopt,exitflag,output] = ga(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
 
 
@@ -79,7 +102,7 @@ while numtours > 1 % Repeat until there is just one subtour
 
     % Try to optimize again
     opts_subtour = optimoptions('intlinprog','Display','iter', 'RelativeGapTolerance',5e-3, 'CutGeneration', 'basic', 'IntegerPreprocess', 'basic', 'Heuristics', 'advanced');
-    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts_subtour);
+    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts_2);
     x_tsp = logical(round(x_tsp));
     Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2),[],numnodes(G));
     % Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases

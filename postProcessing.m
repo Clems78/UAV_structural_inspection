@@ -55,7 +55,7 @@ average_z_pose_error = mean(pose_error_2(:, 3));
 max_error_alt = max(pose_error_2);
 average_pose_error = mean(pose_error, 1);
 mean_dist_error = mean(dist_error, 1);
-mean_dist_error_medoids = nanmean(dist_error_medoids, 1);
+mean_dist_error_medoids = nanmean(dist_error_medoids/1000, 1);
 
 cprintf('Red', '\nPose error \n');
 disp(['Average x pose error: ', num2str(round(average_pose_error(1), 3)), ' m']);
@@ -63,7 +63,7 @@ disp(['Average y pose error: ', num2str(round(average_pose_error(2), 3)), ' m'])
 disp(['Average z pose error: ', num2str(round(average_pose_error(3), 3)), ' m']);
 disp(['Average heading error: ', num2str(round(average_pose_error(4), 1)), ' deg']);
 disp(['Average distance error between waypoints: ', num2str(round(mean_dist_error, 3)), ' m']);
-disp(['Average distance error between medoids: ', num2str(round(mean_dist_error_medoids/1000, 3)), ' m']);
+disp(['Average distance error between medoids: ', num2str(round(mean_dist_error_medoids, 3)), ' m']);
 
 
 

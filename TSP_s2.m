@@ -50,7 +50,7 @@ intcon_2 = 1:lendist_2; % The values in intcon indicate the components of the de
 lb_2 = zeros(lendist_2,1); % lower bound of the decision variable
 ub_2 = ones(lendist_2,1); % upper bound of the decision variable
 
-opts_2 = optimoptions('intlinprog','Display','off');
+opts_2 = optimoptions('intlinprog','Display','none', 'RelativeGapTolerance',1e-2, 'CutGeneration', 'basic', 'IntegerPreprocess', 'none', 'Heuristics', 'advanced');
 [x_tsp_2,costopt_2,exitflag_2,output_2] = intlinprog(dist_2,intcon_2,[],[],Aeq_2,beq_2,lb_2,ub_2,opts_2);
 
 disp('Initial solver calculation done');

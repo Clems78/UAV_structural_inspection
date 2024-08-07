@@ -4,7 +4,7 @@ viewpoints_plotter= true;
 tsp_plotter = true;
 traj_plotter = true;
 overlap_plotter = false;
-tsp =true;
+% tsp =true;
 
 % Plot the surface
 figure(2);

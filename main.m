@@ -7,7 +7,7 @@
 clc;
 close all;
 
-vp_calculation = false;
+vp_calculation = true;
 
 if vp_calculation
 clear;
@@ -25,11 +25,11 @@ initial_guess = false;
 opt = true; % Updating the input dataset or no
 
 % Parameters TSP
-tsp = true;
+tsp = false;
 trajGeneration = false;
-obj = 'duration'; % 'duration' or 'battery' or 'comparison'
+obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
-opti_ratio = 0.4;
+opti_ratio = 0.45;
 
 % Paremeters metrics 
 overlap_calculation = true;
@@ -81,13 +81,13 @@ if tsp
             TSP_bat_consumption = toc;
             cprintf('Red', 'TSP optimized for battery consumption done in %f seconds\n', TSP_bat_consumption);
             [waypointsOrdered, nb_waypoints_ordered, order_waypoints_2] = waypointsOrderingFun(Gsol_2, nb_waypoints, waypoints);
-            [path_length_2(i_pf), alt_changes_2(i_pf)] = TSP_metrics(x_tsp_2, waypointsOrdered, output_2, waypoints);
+            [path_length_2, alt_changes_2] = TSP_metrics(x_tsp_2, waypointsOrdered, output_2, waypoints);
             if (trajGeneration)
                 [position, velocity, acceleration] = traj_generation(nb_waypoints_ordered, waypointsOrdered);
             end
             % Battery consumption calculation
             if battery_consumption
-                E(i_pf) = energyConsumptionPath(waypointsOrdered, V); 
+                E = energyConsumptionPath(waypointsOrdered, V); 
             end
         case 'comparison'
             % Mission duration

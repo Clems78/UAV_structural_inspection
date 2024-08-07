@@ -25,9 +25,9 @@ initial_guess = false;
 opt = true; % Updating the input dataset or no
 
 % Parameters TSP
-tsp = false;
+tsp = true;
 trajGeneration = false;
-obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
+obj = 'duration'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
 opti_ratio = 0.45;
 

@@ -58,7 +58,7 @@ opts = optimoptions('intlinprog','Display','none', 'RelativeGapTolerance',1e-2, 
 %     'RootLPMaxIterations', 1e5 ... % Max iterations for root LP
 % );
 % opts = optimoptions('ga','Display','iter');
-[x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts_2);
+[x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
 % [x_tsp,costopt,exitflag,output] = ga(dist,intcon,[],[],Aeq,beq,lb,ub,opts);
 
 
@@ -102,7 +102,7 @@ while numtours > 1 % Repeat until there is just one subtour
 
     % Try to optimize again
     opts_subtour = optimoptions('intlinprog','Display','iter', 'RelativeGapTolerance',5e-3, 'CutGeneration', 'basic', 'IntegerPreprocess', 'basic', 'Heuristics', 'advanced');
-    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts_2);
+    [x_tsp,costopt,exitflag,output] = intlinprog(dist,intcon,A,b,Aeq,beq,lb,ub,opts);
     x_tsp = logical(round(x_tsp));
     Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2),[],numnodes(G));
     % Gsol = graph(idxs(x_tsp,1),idxs(x_tsp,2)); % Also works in most cases

@@ -28,9 +28,10 @@ z_transport = 5000;
 
 % Ellipsoid representing the uav error in positioning 
 % Is equal to the threshold to reach a waypoint
-a = 300; % semi-axes lenght a (mm) major axis // to surface
-b = 300; % semi-axes lenght b (mm) minor axis // to surface
-c = 300; % semi-axes lenght c (mm) axis perpendicular to surface
+a = 600; % semi-axes lenght a (mm) major axis // to surface
+b = 600; % semi-axes lenght b (mm) minor axis // to surface
+c = 600; % semi-axes lenght c (mm) axis perpendicular to surface
+delta_theta = 2; % Error between the actual orientation of the drone and the desired one
 
 % Detection parameters
 alpha_t = 60; % max allowable angle between the camera's optical axis and the surface normal (degree)
@@ -55,7 +56,6 @@ ellipse_ratio = 0.1;
 rmin = rmaj * ellipse_ratio;
 s = pi() * rmaj * rmin;
 
-delta_theta = 2; % Error between the actual orientation of the drone and the desired one
 d_insp_p = (d_insp - c) * cos(deg2rad(delta_theta)); % updated inspection distance 
 theta = rad2deg(atan(Ih/f)); % Half the fov
 

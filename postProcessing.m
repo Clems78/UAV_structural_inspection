@@ -1,4 +1,4 @@
-% Coverage and overlap calculation:
+    % Coverage and overlap calculation:
 rmaj_fixed_pp = false;
 cprintf('Red', '\nTheory results\n');
 [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, Mtar_filtered(:, 1:3), rmaj_main, rmaj_fixed, Mtar_filtered(:, 4:6), alpha_t, points, area_structure, inspected);

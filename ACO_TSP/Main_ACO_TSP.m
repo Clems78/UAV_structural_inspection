@@ -24,8 +24,20 @@ tic % 保存当前时间
 % load('../test_data/City.mat')	      %需求点经纬度，用于画实际路径的XY坐标
 % load('../test_data/Distance.mat')	  %距离矩阵
 City = waypoints;
-Distance = pdist(waypoints, 'euclidean');
+opti_ratio_h = 0.45;
+altitudeFun = @(ZI, ZJ) altFun(ZI, ZJ);
+
+dist_choice = "euclidean"; % euclidean or alt&dist
+
+if strcmp(dist_choice, 'alt&dist')
+    Distance_eucli = pdist(City, 'euclidean');
+    Distance = (1 - opti_ratio_h) * pdist(City, altitudeFun) + opti_ratio_h * Distance_eucli ;
+elseif strcmp(dist_choice, 'euclidean')
+    Distance = pdist(City, 'euclidean');
+end
+ 
 Distance = squareform(Distance);
+
 %% 初始化问题参数
 CityNum = size(City,1)-1;    %需求点个数
 
@@ -140,3 +152,26 @@ title('ACO Process')
 
 %% 绘制实际路线
 DrawPath(bestroute,City)
+
+%% Calculate metrics : path lenght and alt
+waypointOrdered_ACO = zeros(size(City, 1), 3);
+path_lenght_ACO = 0;
+alt_changes_ACO = 0;
+
+
+for ii = 1:length(bestind)
+    waypointOrdered_ACO(ii, :) = City(bestind(ii), :);
+end
+
+for jj = 1:(size(waypointOrdered_ACO, 1)-1)
+    path_lenght_ACO = path_lenght_ACO + sqrt((waypointOrdered_ACO(jj, 1) - waypointOrdered_ACO(jj+1, 1))^2 + (waypointOrdered_ACO(jj, 2) - waypointOrdered_ACO(jj+1, 2))^2 + (waypointOrdered_ACO(jj, 3) - waypointOrdered_ACO(jj+1, 3))^2);
+    alt_changes_ACO = alt_changes_ACO + abs(waypointOrdered_ACO(jj+1, 3) - waypointOrdered_ACO(jj, 3));
+end
+
+disp(['Path length: ', num2str(path_lenght_ACO/1e3), ' m']);
+disp(['Overall altitude changes: ', num2str(round(alt_changes_ACO, 2)/1000), ' m']);
+
+
+% Battery consumption
+E_ACO = energyConsumptionPath(waypointOrdered_ACO, V); 
+

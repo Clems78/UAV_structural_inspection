@@ -1,6 +1,6 @@
 %reads waypoints_ros.txt file
 % Define the file path
-file_path = 'waypoints_ros.txt';
+file_path = 'waypoints_ros_1_500.txt';
 
 % Open the file for reading
 file_id = fopen(file_path, 'r');

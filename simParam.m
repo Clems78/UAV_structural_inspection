@@ -19,9 +19,9 @@ V = 3.5; % Speed of the uav
 % Structure pose 
 x_transport = 0;
 y_transport = 5000;
-z_transport = 5000;
+%z_transport = 5000;
 
-% z_transport = 70*1e3;
+z_transport = 70*1e3;
 
 % Mission specifications
 % waiting time at each viewpoints
@@ -36,7 +36,7 @@ c = 200; % semi-axes lenght c (mm) axis perpendicular to surface
 delta_theta = 2; % Error between the actual orientation of the drone and the desired one
 
 % Detection parameters
-alpha_t = 10; % max allowable angle between the camera's optical axis and the surface normal (degree)
+alpha_t = 5; % max allowable angle between the camera's optical axis and the surface normal (degree)
 GSD = 0.3; % Ground Sampling Distance (mm/pixel)
 d_insp = GSD * f * Ih / sensor_height; % inspection distance / camera size and resolution should be the shortest distance between height and width
 
@@ -83,15 +83,15 @@ s_p_2 = pi() * rmaj_p_2^2;
 % step = find the position that minimizes xq = find the worst camera
 % position pc. This position in on the arc define by the equation:
 
-syms x y ;
-eqn = x^2 / a^2 + (y - d_insp_p)^2 / c^2 == 1; 
-xq = x + c * tan(deg2rad(theta_p)) * sqrt(1 - ((x^2)/(a^2))) - d_insp_p * tan(deg2rad(theta_p));
+%syms x y ;
+%qn = x^2 / a^2 + (y - d_insp_p)^2 / c^2 == 1; 
+%xq = x + c * tan(deg2rad(theta_p)) * sqrt(1 - ((x^2)/(a^2))) - d_insp_p * tan(deg2rad(theta_p));
 
 % Differentiate f_x to find the minimal value of xq 
-df_x = diff(xq);
-eqn_2 = df_x == 0;
-x_min = double(solve(eqn_2, x));% the xq_min is obtained for x_min 
-xq_min = double(subs(xq, x, x_min));
+%df_x = diff(xq);
+%eqn_2 = df_x == 0;
+%x_min = double(solve(eqn_2, x));% the xq_min is obtained for x_min 
+%xq_min = double(subs(xq, x, x_min));
 
 rmaj_p = (d_insp_p/1000) * tan(deg2rad(theta_p)) - sqrt((a/1000)^2 + ((c/1000)^2) * (tan(deg2rad(theta_p)))^2 );
 

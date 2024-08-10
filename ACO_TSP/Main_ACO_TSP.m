@@ -42,7 +42,8 @@ Distance = squareform(Distance);
 CityNum = size(City,1)-1;    %需求点个数
 
 %% 初始化参数
-AntNum = 15;                            % 蚂蚁数量
+% AntNum = 15;      
+AntNum = 15;  
 Alpha = 1;                              % 信息素重要程度因子
 Beta = 5;                               % 启发函数重要程度因子
 Rho = 0.1;                              % 信息素挥发因子

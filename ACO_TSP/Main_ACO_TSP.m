@@ -1,6 +1,6 @@
 clc %清空命令行窗口
 % clear %从当前工作区中删除所有变量，并将它们从系统内存中释放
-close all %删除其句柄未隐藏的所有图窗
+% close all %删除其句柄未隐藏的所有图窗
 tic % 保存当前时间
 %% 蚁群算法求解TSP
 %输入：
@@ -24,14 +24,18 @@ tic % 保存当前时间
 % load('../test_data/City.mat')	      %需求点经纬度，用于画实际路径的XY坐标
 % load('../test_data/Distance.mat')	  %距离矩阵
 City = waypoints;
-opti_ratio_h = 0.45;
+if ~pareto_front_enabled
+    opti_ratio = 0.45;
+    i_pf = 1;
+end 
+
 altitudeFun = @(ZI, ZJ) altFun(ZI, ZJ);
 
 dist_choice = "euclidean"; % euclidean or alt&dist
 
 if strcmp(dist_choice, 'alt&dist')
     Distance_eucli = pdist(City, 'euclidean');
-    Distance = (1 - opti_ratio_h) * pdist(City, altitudeFun) + opti_ratio_h * Distance_eucli ;
+    Distance = (1 - opti_ratio) * pdist(City, altitudeFun) + opti_ratio * Distance_eucli ;
 elseif strcmp(dist_choice, 'euclidean')
     Distance = pdist(City, 'euclidean');
 end
@@ -51,9 +55,10 @@ Q = 1;                                  % 常系数
 Eta = 1./Distance;                      % 启发函数
 Tau = ones(CityNum+1);                  % (CityNum+1)*(CityNum+1)信息素矩阵  初始化全为1
 Population = ones(AntNum,CityNum+2);           % 路径记录表
-MaxIter = 300;                           % 最大迭代次数
+MaxIter = 10;                           % 最大迭代次数
 bestind = ones(1,CityNum+2);      % 各代最佳路径
 MinDis = zeros(MaxIter,1);              % 各代最佳路径的长度
+plot_aco = false;
 
 %% 迭代寻找最佳路径
 Iter = 1;                               % 迭代次数初值
@@ -139,20 +144,22 @@ bestroute = bestind-1; % 取得最优个体
 
 %% 计算结果数据输出到命令行
 disp('-------------------------------------------------------------')
-toc %显示运行时间
+ACO_duration = toc %显示运行时间
 TextOutput(bestroute,mindisever)  %显示最优路径
 
 %% 迭代图
-figure
-plot(MinDis,'LineWidth',2) %展示目标函数值历史变化
-xlim([1 Iter-1]) %设置 x 坐标轴范围
-set(gca, 'LineWidth',1)
-xlabel('Iterations')
-ylabel('Min Distance(km)')
-title('ACO Process')
-
-%% 绘制实际路线
-DrawPath(bestroute,City)
+if plot_aco
+    figure
+    plot(MinDis,'LineWidth',2) %展示目标函数值历史变化
+    xlim([1 Iter-1]) %设置 x 坐标轴范围
+    set(gca, 'LineWidth',1)
+    xlabel('Iterations')
+    ylabel('Min Distance(km)')
+    title('ACO Process')
+    
+    %% 绘制实际路线
+    DrawPath(bestroute,City)
+end
 
 %% Calculate metrics : path lenght and alt
 waypointOrdered_ACO = zeros(size(City, 1), 3);

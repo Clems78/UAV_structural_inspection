@@ -1,17 +1,22 @@
-   function tspExportFnc(wp_opt, filename, is3D)
-    % Check if wp_opt is a valid matrix
+function tspExportWithMatrix(wp_opt, filename, comment, opti_ratio)
+    % Check if wp_opt is a valid Nx2 or Nx3 matrix
     if size(wp_opt, 2) < 2 || size(wp_opt, 2) > 3
         error('wp_opt must be an Nx2 or Nx3 matrix of coordinates.');
-    end
-    
-    % Check if the is3D flag is provided; default to false (2D)
-    if nargin < 3
-        is3D = false;
     end
     
     % Get the number of waypoints
     num_waypoints = size(wp_opt, 1);
     
+
+    altitudeFun = @(ZI, ZJ) altFun(ZI, ZJ);
+    dist_eucli = pdist(wp_opt, 'euclidean');
+
+    dist = (1 - opti_ratio) * pdist(wp_opt, altitudeFun) + opti_ratio * dist_eucli ;
+    dist = squareform(dist);
+
+    % Round distances to the nearest integer
+    dist = round(dist);
+
     % Define the base name for files
     [filepath, name, ~] = fileparts(filename);
     
@@ -23,32 +28,26 @@
     end
     
     % Write the header information
-    fprintf(fid, 'NAME : %s\n', name);
-    fprintf(fid, 'COMMENT : irp\n');
-    fprintf(fid, 'TYPE : TSP\n');
-    fprintf(fid, 'DIMENSION : %d\n', num_waypoints);
-    if is3D
-        fprintf(fid, 'EDGE_WEIGHT_TYPE : EUC_3D\n');
-    else
-        fprintf(fid, 'EDGE_WEIGHT_TYPE : EUC_2D\n');
-    end
-    fprintf(fid, 'NODE_COORD_SECTION\n');
+    fprintf(fid, 'NAME: %s\n', name);
+    fprintf(fid, 'TYPE: TSP\n');
+    fprintf(fid, 'COMMENT: %s\n', comment);
+    fprintf(fid, 'DIMENSION: %d\n', num_waypoints);
+    fprintf(fid, 'EDGE_WEIGHT_TYPE: EXPLICIT\n');
+    fprintf(fid, 'EDGE_WEIGHT_FORMAT: FULL_MATRIX\n');
+    fprintf(fid, 'EDGE_WEIGHT_SECTION\n');
     
-    % Write the waypoints
-    if is3D
-        for i = 1:num_waypoints
-            fprintf(fid, '%d %.5e %.5e %.5e\n', i, wp_opt(i, 1), wp_opt(i, 2), wp_opt(i, 3));
-        end
-    else
-        for i = 1:num_waypoints
-            fprintf(fid, '%d %.5e %.5e\n', i, wp_opt(i, 1), wp_opt(i, 2));
-        end
+    % Write the distance matrix as integers
+    for i = 1:num_waypoints
+        fprintf(fid, '%d ', dist(i, :));
+        fprintf(fid, '\n');
     end
+    
+    % Write EOF at the end of the file
     fprintf(fid, 'EOF\n');
     
     % Close the TSP file
     fclose(fid);
-    
+
     % Create and write the .par file
     par_filename = fullfile(filepath, [name, '.par']);
     fid = fopen(par_filename, 'w');
@@ -65,10 +64,9 @@
     % fprintf(fid, 'RUNS = 10\n');
     fprintf(fid, 'OUTPUT_TOUR_FILE = wp_opt_sol.tsp\n');
 
-    
     % Close the .par file
     fclose(fid);
     
     fprintf('Data successfully exported to %s and %s\n', tsp_filename, par_filename);
+    
 end
-

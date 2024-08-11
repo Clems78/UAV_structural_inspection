@@ -15,6 +15,7 @@ vp_calculation = true;
 end
 
 z_limit_vp_generation = true; %limit the inspection on the z axis (tuning available in processSTL)
+pareto_front_enabled = true;
 
 % Import STL
 file_name = 'cylinder_gz.stl';
@@ -22,7 +23,7 @@ file_name = 'cylinder_gz.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
-opt = true; % Updating the input dataset or no
+opt = false; % Updating the input dataset or no
 section = true;
 ns_not_inspected = true;
 min_z_coeff = 0;
@@ -31,19 +32,23 @@ max_z_coeff = 0;
 % Parameters TSP
 tsp = false;
 trajGeneration = false;
-obj = 'duration'; % 'duration' or 'battery' or 'comparison'
+obj = 'battery'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
-opti_ratio = 0.45;
+if ~pareto_front_enabled
+    opti_ratio = 0.45;
+end
 
 % Paremeters metrics 
 overlap_calculation = true;
 battery_consumption = true;
 
 % Plotter parameters
-plotter = true;
+plotter = false;
 in_loop_plotter = true;
 in_loop_printer = false;
 pause_time = 0.001;
+
+% pareto front calculation parameters
 
 % Loading simulation parameters
 simParam;
@@ -86,8 +91,8 @@ if tsp
             tic
             cprintf("Red", "TSP optimised for battery consumption starts\n");
             TSP_s2;
-            TSP_bat_consumption = toc;
-            cprintf('Red', 'TSP optimized for battery consumption done in %f seconds\n', TSP_bat_consumption);
+            TSP_bat_consumption_duration = toc;
+            cprintf('Red', 'TSP optimized for battery consumption done in %f seconds\n', TSP_bat_consumption_duration);
             [waypointsOrdered, nb_waypoints_ordered, order_waypoints_2] = waypointsOrderingFun(Gsol_2, nb_waypoints, waypoints);
             [path_length_2, alt_changes_2] = TSP_metrics(x_tsp_2, waypointsOrdered, output_2, waypoints);
             if (trajGeneration)

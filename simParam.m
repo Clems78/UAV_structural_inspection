@@ -19,9 +19,9 @@ V = 3.5; % Speed of the uav
 % Structure pose 
 x_transport = 0;
 y_transport = 5000;
-%z_transport = 5000;
+z_transport = 5000;
 
-z_transport = 70*1e3;
+% z_transport = 70*1e3;
 
 % Mission specifications
 % waiting time at each viewpoints
@@ -36,7 +36,7 @@ c = 200; % semi-axes lenght c (mm) axis perpendicular to surface
 delta_theta = 2; % Error between the actual orientation of the drone and the desired one
 
 % Detection parameters
-alpha_t = 5; % max allowable angle between the camera's optical axis and the surface normal (degree)
+alpha_t = 60; % max allowable angle between the camera's optical axis and the surface normal (degree)
 GSD = 0.3; % Ground Sampling Distance (mm/pixel)
 d_insp = GSD * f * Ih / sensor_height; % inspection distance / camera size and resolution should be the shortest distance between height and width
 

@@ -31,8 +31,8 @@ Mtar = [centroid, normal];
 
 % Define the threshold for the z-coordinate on the viewpoints generation
 height = max(Mtar(:, 3)) - min(Mtar(:, 3));
-z_min_threshold = min(Mtar(:, 3)) + height * 0.1 ;
-z_max_threshold = max(Mtar(:, 3)) - height * 0.1;
+z_min_threshold = min(Mtar(:, 3)) + height * min_z_coeff ;
+z_max_threshold = max(Mtar(:, 3)) - height * max_z_coeff;
 
 if (z_limit_vp_generation)
     % Logical indexing to filter rows where the z-coordinate (3rd column) is higher than the threshold

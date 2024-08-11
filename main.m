@@ -18,16 +18,17 @@ z_limit_vp_generation = true; %limit the inspection on the z axis (tuning availa
 pareto_front_enabled = true;
 
 % Import STL
-file_name = 'cylinder_gz.stl';
+file_name = 'board.stl';
+% file_name = 'cylinder_gz.stl';
 % file_name = 'tower_nacelle.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
-opt = false; % Updating the input dataset or no
+opt = true; % Updating the input dataset or no
 section = true;
 ns_not_inspected = true;
-min_z_coeff = 0;
-max_z_coeff = 0;
+min_z_coeff = 0.25;
+max_z_coeff = 0.25;
 
 % Parameters TSP
 tsp = false;
@@ -53,6 +54,7 @@ pause_time = 0.001;
 % Loading simulation parameters
 simParam;
 rmaj_main = rmaj_p;
+section_divider = 2*rmaj_main; % rmaj_main or 2 * rmaj_main
 
 % Viewpoints Generation
 if vp_calculation 

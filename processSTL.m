@@ -31,24 +31,14 @@ Mtar = [centroid, normal];
 
 % Define the threshold for the z-coordinate on the viewpoints generation
 height = max(Mtar(:, 3)) - min(Mtar(:, 3));
-% z_min_threshold_init = min(Mtar(:, 3)) + height * min_z_coeff - 100 ;
-% z_max_threshold_init = max(Mtar(:, 3)) - height * max_z_coeff + 100;
-
-% if (z_limit_vp_generation)
-%     % Logical indexing to filter rows where the z-coordinate (3rd column) is higher than the threshold
-%     Mtar_filtered = Mtar(Mtar(:, 3) > z_min_threshold_init & Mtar(:, 3) < z_max_threshold_init, :);
-% else
-%     Mtar_filtered = Mtar;
-% end
+z_min_1 = min(Mtar(:, 3)) + height * min_z_coeff ;
+z_max_1 = max(Mtar(:, 3)) - height * max_z_coeff;
+height_updated = z_max_1 - z_min_1;
 
 % Initialise inspected samples
-% inspected = zeros(size(Mtar_filtered, 1), 1);
 inspected = [];
 
-% height_updated = max(Mtar_filtered(:, 3)) - min(Mtar_filtered(:, 3));
-
-diameter = 2 * rmaj_main;
-nb_sections = ceil(height / 1000 / rmaj_main);
+nb_sections = ceil(height_updated / 1000 / section_divider);
 disp([num2str(nb_sections), ' sections']);
 z_min_threshold = zeros(nb_sections, 1);
 z_max_threshold = zeros(nb_sections, 1);
@@ -62,11 +52,11 @@ medoids_temp = cell(1, nb_sections);
 for kk = 1:nb_sections
     if (kk == 1) 
         % z_min_threshold(kk) = z_min_threshold_init;
-        z_min_threshold(kk) =  min(Mtar(:, 3)); %+ height * 0.1 ;
-        z_max_threshold(kk) = z_min_threshold(kk) + height / nb_sections; %height_updated / nb_sections;
+        z_min_threshold(kk) =  z_min_1; %+ height * 0.1 ;
+        z_max_threshold(kk) = z_min_threshold(kk) + height_updated / nb_sections; %height_updated / nb_sections;
     else
         z_min_threshold(kk) = z_max_threshold(kk-1);
-        z_max_threshold(kk) = z_min_threshold(kk) + height / nb_sections; % height_updated / nb_sections;
+        z_max_threshold(kk) = z_min_threshold(kk) + height_updated / nb_sections; % height_updated / nb_sections;
     end
 end
 

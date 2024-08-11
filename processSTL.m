@@ -48,7 +48,7 @@ inspected = [];
 % height_updated = max(Mtar_filtered(:, 3)) - min(Mtar_filtered(:, 3));
 
 diameter = 2 * rmaj_main;
-nb_sections = ceil(height / 1000 / diameter);
+nb_sections = ceil(height / 1000 / rmaj_main);
 disp([num2str(nb_sections), ' sections']);
 z_min_threshold = zeros(nb_sections, 1);
 z_max_threshold = zeros(nb_sections, 1);
@@ -156,8 +156,8 @@ for gg = 1:nb_sections
                     ii = ii + 1;
                     % Save the intermediate result every 10 iterations
                     if mod(ii, 10) == 0
-                        save(checkpointFile, 'result', 'ii');
-                        fprintf('Checkpoint saved at iteration %d\n', ii);
+                        %save(checkpointFile, 'result', 'ii');
+                        %fprintf('Checkpoint saved at iteration %d\n', ii);
                     end
                 end
             else

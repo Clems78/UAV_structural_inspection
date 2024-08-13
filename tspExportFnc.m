@@ -1,4 +1,4 @@
-   function tspExportFnc(wp_opt, filename, is3D)
+   function tspExportFnc(wp_opt, filename, is3D, time_limit)
     % Check if wp_opt is a valid matrix
     if size(wp_opt, 2) < 2 || size(wp_opt, 2) > 3
         error('wp_opt must be an Nx2 or Nx3 matrix of coordinates.');
@@ -64,6 +64,8 @@
     % fprintf(fid, 'PATCHING_A = 2\n');
     % fprintf(fid, 'RUNS = 10\n');
     fprintf(fid, 'OUTPUT_TOUR_FILE = wp_opt_sol.tsp\n');
+    fprintf(fid, 'TOTAL_TIME_LIMIT = %d\n', time_limit);
+
 
     
     % Close the .par file

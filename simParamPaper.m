@@ -20,9 +20,9 @@ V = 3.5; % Speed of the uav
 % Structure pose 
 x_transport = 0;
 y_transport = 5000;
-% z_transport = 5000;
+z_transport = 5000;
 
-z_transport = 70*1e3;
+% z_transport = 70*1e3;
 
 % Mission specifications
 % waiting time at each viewpoints

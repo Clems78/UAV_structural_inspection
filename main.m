@@ -18,8 +18,8 @@ z_limit_vp_generation = true; %limit the inspection on the z axis (tuning availa
 pareto_front_enabled = true;
 
 % Import STL
-% file_name = 'board.stl';
-file_name = 'paper_test_piece.stl';
+file_name = 'board.stl';
+% file_name = 'wind_turbine.stl';
 % file_name = 'cylinder_gz.stl';
 % file_name = 'tower_nacelle.stl';
 

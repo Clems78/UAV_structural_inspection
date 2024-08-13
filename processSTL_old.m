@@ -33,10 +33,11 @@ Mtar = [centroid, normal];
 height = max(Mtar(:, 3)) - min(Mtar(:, 3));
 z_min_threshold = min(Mtar(:, 3)) + height * min_z_coeff ;
 z_max_threshold = max(Mtar(:, 3)) - height * max_z_coeff;
+y_min_threshold = min(Mtar(:, 2)) + y_min_distance;
 
 if (z_limit_vp_generation)
     % Logical indexing to filter rows where the z-coordinate (3rd column) is higher than the threshold
-    Mtar_filtered = Mtar(Mtar(:, 3) > z_min_threshold & Mtar(:, 3) < z_max_threshold, :);
+    Mtar_filtered = Mtar(Mtar(:, 3) >= z_min_threshold & Mtar(:, 3) <= z_max_threshold & Mtar(:, 2) <= y_min_threshold, :);
 else
     Mtar_filtered = Mtar;
 end
@@ -52,7 +53,7 @@ all_inspected = false;
 colors = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all triangles
 % colors = [1 0.6 0];
 % Map filtered indices back to the original structure
-filtered_indices = find(Mtar(:, 3) > z_min_threshold & Mtar(:, 3) < z_max_threshold);
+filtered_indices = find(Mtar(:, 3) >= z_min_threshold & Mtar(:, 3) <= z_max_threshold & Mtar(:, 2) <= y_min_threshold);
         
 % Print the surface
 trisurf(gm, 'FaceVertexCData', colors);

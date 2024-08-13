@@ -19,7 +19,7 @@ gm = triangulation(gm.ConnectivityList, points_updated);
 clusterNbEstimation;   
 
 if (initial_guess)
-    k = k_est;
+    k = k_est-250;
 else 
     k = 1;
 end
@@ -28,12 +28,15 @@ centroid = incenter(gm);
 normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
+filtered_indices_full = [];
 
 % Define the threshold for the z-coordinate on the viewpoints generation
 height = max(Mtar(:, 3)) - min(Mtar(:, 3));
 z_min_1 = min(Mtar(:, 3)) + height * min_z_coeff ;
 z_max_1 = max(Mtar(:, 3)) - height * max_z_coeff;
 height_updated = z_max_1 - z_min_1;
+
+y_min_threshold = min(Mtar(:, 2)) + y_min_distance;
 
 % Initialise inspected samples
 inspected = [];
@@ -67,15 +70,15 @@ Mtar_filtered = [];
 
 for gg = 1:nb_sections
     if (z_limit_vp_generation)
-        Mtar_filtered_temp = zeros(size(Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg), :), 1), size(Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg), :), 2), nb_sections);
+        Mtar_filtered_temp = zeros(size(Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg) & Mtar(:, 2) <= y_min_threshold, :), 1), size(Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg) & Mtar(:, 2) <= y_min_threshold, :), 2), nb_sections);
         full_size = full_size + size(Mtar_filtered_temp, 1);
-        Mtar_filtered_temp(:, :, gg) = Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg), :);
+        Mtar_filtered_temp(:, :, gg) = Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg) & Mtar(:, 2) <= y_min_threshold, :);
         
         Mtar_filtered = [Mtar_filtered; Mtar_filtered_temp(:, :, gg)];
 
         if gg < nb_sections
-            Mtar_filtered_ns = zeros(size(Mtar(Mtar(:, 3) >= z_min_threshold(gg+1) & Mtar(:, 3) <= z_max_threshold(gg+1), :), 1), size(Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg), :), 2), nb_sections);
-            Mtar_filtered_ns(:, :, gg) = Mtar(Mtar(:, 3) >= z_min_threshold(gg+1) & Mtar(:, 3) <= z_max_threshold(gg+1), :);
+            Mtar_filtered_ns = zeros(size(Mtar(Mtar(:, 3) >= z_min_threshold(gg+1) & Mtar(:, 3) <= z_max_threshold(gg+1) & Mtar(:, 2) <= y_min_threshold, :), 1), size(Mtar(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg) & Mtar(:, 2) <= y_min_threshold, :), 2), nb_sections);
+            Mtar_filtered_ns(:, :, gg) = Mtar(Mtar(:, 3) >= z_min_threshold(gg+1) & Mtar(:, 3) <= z_max_threshold(gg+1) & Mtar(:, 2) <= y_min_threshold, :);
         end
     else
         Mtar_filtered_temp = Mtar;
@@ -93,9 +96,10 @@ for gg = 1:nb_sections
     colors = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all triangles
     % colors = [1 0.6 0];
     % Map filtered indices back to the original structure
-    filtered_indices = find(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg));
+    filtered_indices = find(Mtar(:, 3) >= z_min_threshold(gg) & Mtar(:, 3) <= z_max_threshold(gg) & Mtar(:, 2) <= y_min_threshold);
+    filtered_indices_full = [filtered_indices_full; filtered_indices];
     if gg < nb_sections
-        filtered_indices_ns = find(Mtar(:, 3) >= z_min_threshold(gg+1) & Mtar(:, 3) <= z_max_threshold(gg+1));
+        filtered_indices_ns = find(Mtar(:, 3) >= z_min_threshold(gg+1) & Mtar(:, 3) <= z_max_threshold(gg+1) & Mtar(:, 2) <= y_min_threshold);
         inspected_ns = zeros(size(Mtar_filtered_ns(:, :, gg), 1), 1);
     end 
     

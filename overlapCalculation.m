@@ -1,11 +1,8 @@
-function [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj, rmaj_fixed, normal, alpha_t, points, area_structure, inspected)
+function [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj, rmaj_fixed, normal, alpha_t, points, area_structure, inspected, filtered_indices_full)
 % Assess overlap
 inspected_overlap = zeros(size(Mtar_filtered, 1), 1);
 area_overlaped = 0;
 area_not_cov = 0;
-nodes_lists_filtered = nodes_list(ground_node == 0, :);
- 
-
 
 for i = 1:size(Mtar_filtered, 1)
     for j = 1:size(C, 1)
@@ -30,9 +27,9 @@ for i = 1:size(Mtar_filtered, 1)
 
     if (inspected_overlap(i, 1) >= 2)
         % Getting the area covered by the polygon
-        index1_overlap = nodes_lists_filtered(i, 1);
-        index2_overlap = nodes_lists_filtered(i, 2);
-        index3_overlap = nodes_lists_filtered(i, 3);
+        index1_overlap = nodes_list(filtered_indices_full(i), 1);
+        index2_overlap = nodes_list(filtered_indices_full(i), 2);
+        index3_overlap = nodes_list(filtered_indices_full(i), 3);
     
         nodes_matrix_overlap = [points(index1_overlap, :);
                 points(index2_overlap, :);
@@ -41,10 +38,10 @@ for i = 1:size(Mtar_filtered, 1)
         area_overlaped = area_overlaped + getAreaTriangle(nodes_matrix_overlap/1000);
     end
 
-    if (inspected(i, 1) == 0)
-        index1_cov = nodes_lists_filtered(i, 1);
-        index2_cov = nodes_lists_filtered(i, 2);
-        index3_cov = nodes_lists_filtered(i, 3);
+    if (inspected_overlap(i, 1) == 0)
+        index1_cov = nodes_list(filtered_indices_full(i), 1);
+        index2_cov = nodes_list(filtered_indices_full(i), 2);
+        index3_cov = nodes_list(filtered_indices_full(i), 3);
     
         nodes_matrix_cov = [points(index1_cov, :);
                 points(index2_cov, :);

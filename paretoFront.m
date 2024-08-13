@@ -1,7 +1,7 @@
 % Pareto front for alt&length optimisation 
 % algo = 'LKH'; % MILP or ACO or LKH
 
-algo = [2, 3];
+algo = [3];
 
 iter_value = 0.1;
 

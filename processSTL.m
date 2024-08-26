@@ -41,7 +41,6 @@ if y_min_enabled
     y_min_threshold = min(Mtar(:, 2)) + y_min_distance;
 elseif ~y_min_enabled
     y_min_threshold = 100000000;
->>>>>>> stash
 end
 
 % Initialise inspected samples

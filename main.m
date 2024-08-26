@@ -30,7 +30,7 @@ opt = false; % Updating the input dataset or no
 section = true;
 ns_not_inspected = true;
 min_z_coeff = 0.001;
-max_z_coeff = 0;
+max_z_coeff = 0.001;
 y_min_distance = 1; %
 y_min_enabled = false;
 

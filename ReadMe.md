@@ -11,6 +11,10 @@ The input of the Viewpoints Generation (VG) algorithm is an stl file that should
 
 # 2. Viewpoints Generation
 
-The target structure 
+Using k-medoids clustering, viewpoints are generated. A few parameters can be changed in the SimParam.m file:
+
+
+![Alt text](Images/Screencast-from-08-26-2024-07_16_28-PM.gif)
+
 
 

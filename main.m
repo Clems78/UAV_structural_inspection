@@ -15,27 +15,31 @@ vp_calculation = true;
 end
 
 z_limit_vp_generation = true; %limit the inspection on the z axis (tuning available in processSTL)
-pareto_front_enabled = true;
+pareto_front_enabled = false;
 
 % Import STL
 file_name = 'board.stl';
 % file_name = 'wind_turbine.stl';
 % file_name = 'cylinder_gz.stl';
+file_name = 'cylinder_2.stl';
+% file_name = 'wind_turbine_4e2.stl';
+% file_name = 'blade_2e2.stl';
 % file_name = 'tower_nacelle.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
 opt = false; % Updating the input dataset or no
 section = true;
-ns_not_inspected = false;
-min_z_coeff = 0;
+ns_not_inspected = true;
+min_z_coeff = 0.001;
 max_z_coeff = 0;
 y_min_distance = 1; %
+y_min_enabled = false;
 
 % Parameters TSP
-tsp = false;
+tsp = true;
 trajGeneration = false;
-obj = 'battery'; % 'duration' or 'battery' or 'comparison'
+obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
 if ~pareto_front_enabled
     opti_ratio = 0.45;
@@ -46,7 +50,7 @@ overlap_calculation = true;
 battery_consumption = true;
 
 % Plotter parameters
-plotter = false;
+plotter = true;
 in_loop_plotter = true;
 in_loop_printer = false;
 pause_time = 0.001;
@@ -54,10 +58,10 @@ pause_time = 0.001;
 % pareto front calculation parameters
 
 % Loading simulation parameters
-simParamPaper;
-% simParam;
+% simParamPaper;
+simParam;
 rmaj_main = rmaj_p;
-section_divider = 2*rmaj_main - (rmaj_main*2) * 0.3; % rmaj_main or 2 * rmaj_main
+section_divider = 2*rmaj_main*0.7; % rmaj_main or 2 * rmaj_main
 
 % Viewpoints Generation
 if vp_calculation 

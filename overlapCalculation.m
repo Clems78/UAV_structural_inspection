@@ -1,15 +1,10 @@
-function [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov, area_structure] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, rmaj, rmaj_fixed, alpha_t, points, inspected, filtered_indices_full)
+function [no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, centroid, rmaj, rmaj_fixed, normal, alpha_t, points, area_structure, inspected, filtered_indices_full)
 % Assess overlap
 inspected_overlap = zeros(size(Mtar_filtered, 1), 1);
 area_overlaped = 0;
 area_not_cov = 0;
-area_structure = 0;
-
-centroid = Mtar_filtered(:, 1:3);
-normal = Mtar_filtered(:, 4:6);
 
 for i = 1:size(Mtar_filtered, 1)
-    % disp(["Processing polygons #", num2str(i)]);
     for j = 1:size(C, 1)
         distance_cluster = sqrt((centroid(i, 1) - C(j, 1))^2 + (centroid(i, 2) - C(j, 2))^2 + (centroid(i, 3) - C(j, 3))^2)/1000;
         if rmaj_fixed
@@ -29,16 +24,6 @@ for i = 1:size(Mtar_filtered, 1)
             inspected_overlap(i, 1) = inspected_overlap(i, 1) + 1;
         end  
     end
-
-    % Area structure calculation
-    index1_struct = nodes_list(filtered_indices_full(i), 1);
-    index2_struct= nodes_list(filtered_indices_full(i), 2);
-    index3_struct= nodes_list(filtered_indices_full(i), 3);
-    
-    nodes_matrix_struct = [points(index1_struct, :);
-            points(index2_struct, :);
-            points(index3_struct, :)];    
-    area_structure = area_structure + getAreaTriangle(nodes_matrix_struct/1000);
 
     if (inspected_overlap(i, 1) >= 2)
         % Getting the area covered by the polygon
@@ -64,3 +49,21 @@ for i = 1:size(Mtar_filtered, 1)
     
         area_not_cov = area_not_cov + getAreaTriangle(nodes_matrix_cov/1000);
     end
+        
+
+
+end
+
+coverage = (area_structure - area_not_cov) / area_structure * 100;
+no_overlap = sum(inspected_overlap == 1) / size(Mtar_filtered, 1) * 100;
+overlapped_twice = sum(inspected_overlap == 2) / size(Mtar_filtered, 1) * 100;
+overlapped_thrice = sum(inspected_overlap == 3) / size(Mtar_filtered, 1) * 100;
+overlapped_elmts = sum(inspected_overlap > 1) / size(Mtar_filtered, 1) * 100;
+
+    % Disp results
+    disp(['Overlap: ', num2str(area_overlaped/area_structure * 100), ' %']);
+    disp([num2str(no_overlap), '% of the polygons are inspected exactly once']);
+    disp([num2str(overlapped_elmts), '% of the polygons are inspected more than once']);
+    disp([num2str(overlapped_twice), '% of the polygons are inspected twice']);
+    disp([num2str(overlapped_thrice), '% of the polygons are inspected thrice']); 
+    disp(['Coverage: ', num2str(coverage), '%']); 

@@ -36,7 +36,11 @@ z_min_1 = min(Mtar(:, 3)) + height * min_z_coeff ;
 z_max_1 = max(Mtar(:, 3)) - height * max_z_coeff;
 height_updated = z_max_1 - z_min_1;
 
-y_min_threshold = min(Mtar(:, 2)) + y_min_distance;
+if y_min_enabled 
+    y_min_threshold = min(Mtar(:, 2)) + y_min_distance;
+else
+    y_min_threshold = max(Mtar(:, 2)) + 100000;
+end
 
 % Initialise inspected samples
 inspected = [];

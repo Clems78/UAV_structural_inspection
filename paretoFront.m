@@ -34,7 +34,7 @@ for i = 1:length(algo)
     
     while (opti_ratio < 1 )
     
-        opti_ratio = opti_ratio + iter_value
+        opti_ratio = opti_ratio + iter_value;
     
         switch algo_choice 
             case 1 

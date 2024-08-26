@@ -7,6 +7,11 @@
 clc;
 close all;
 
+addpath("Functions");
+addpath("Post-Processing");
+addpath("Scripts");
+
+
 vp_calculation = true;
 
 if vp_calculation
@@ -18,10 +23,10 @@ z_limit_vp_generation = true; %limit the inspection on the z axis (tuning availa
 pareto_front_enabled = false;
 
 % Import STL
-file_name = 'board.stl';
+file_name = 'STL/cylinder.stl';
+% file_name = 'board.stl';
 % file_name = 'wind_turbine.stl';
 % file_name = 'cylinder_gz.stl';
-file_name = 'cylinder_2.stl';
 % file_name = 'wind_turbine_4e2.stl';
 % file_name = 'blade_2e2.stl';
 % file_name = 'tower_nacelle.stl';
@@ -46,7 +51,7 @@ if ~pareto_front_enabled
 end
 
 % Paremeters metrics 
-overlap_calculation = true;
+overlap_calculation = false;
 battery_consumption = true;
 
 % Plotter parameters

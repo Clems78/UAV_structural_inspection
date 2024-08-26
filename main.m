@@ -15,7 +15,7 @@ vp_calculation = true;
 end
 
 z_limit_vp_generation = true; %limit the inspection on the z axis (tuning available in processSTL)
-pareto_front_enabled = true;
+pareto_front_enabled = false;
 
 % Import STL
 % file_name = 'board.stl';
@@ -30,7 +30,7 @@ file_name = 'cylinder_2.stl';
 % Parameters viewpoints generation 
 initial_guess = false;
 opt = false; % Updating the input dataset or no
-section = false;
+section = true;
 ns_not_inspected = true;
 min_z_coeff = 0.001;
 max_z_coeff = 0;
@@ -40,15 +40,15 @@ y_min_enabled = false;
 % Parameters TSP
 tsp = true;
 trajGeneration = false;
-obj = 'duration'; % 'duration' or 'battery' or 'comparison'
+obj = 'comparison'; % 'duration' or 'battery' or 'comparison'
 obj_s2 = "alt&path"; %"alt" or "alt&path"
 if ~pareto_front_enabled
     opti_ratio = 0.45;
 end
 
 % Paremeters metrics 
-overlap_calculation = false;
-battery_consumption = false;
+overlap_calculation = true;
+battery_consumption = true;
 
 % Plotter parameters
 plotter = true;

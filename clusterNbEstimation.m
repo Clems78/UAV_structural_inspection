@@ -3,7 +3,7 @@
 % Calculate the area of the structure
 nodes_list = gm.ConnectivityList;
 points = gm.Points;
-area_structure = 0;
+area_structure_old = 0;
 
 % Remove the nodes that are on the ground (useful for the
 % overlapCalculation script)
@@ -25,12 +25,12 @@ for i = 1:length(nodes_list)
     end
 
     if (ground_node(i) == false)
-        area_structure = area_structure + getAreaTriangle(nodes_matrix/1000);
+        area_structure_old = area_structure_old + getAreaTriangle(nodes_matrix/1000);
     end
 end
 
 % Get the number of clusters
-k_est = round(area_structure / s_p) ;
+k_est = round(area_structure_old / s_p) ;
 
 if (k_est == 0)
     k_est = 1;

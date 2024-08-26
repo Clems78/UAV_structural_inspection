@@ -1,9 +1,17 @@
 % Pareto front for alt&length optimisation 
 % algo = 'LKH'; % MILP or ACO or LKH
+set(groot, 'defaultTextInterpreter', 'latex');  % Use LaTeX interpreter for all text objects
+set(groot, 'defaultAxesTickLabelInterpreter', 'latex'); % Use LaTeX for tick labels
+set(groot, 'defaultLegendInterpreter', 'latex'); % Use LaTeX for legends
+set(groot, 'defaultAxesFontSize', 12);   % Adjust as necessary
+set(groot, 'defaultTextFontSize', 12);   % Adjust as necessary
+set(groot, 'defaultAxesFontWeight', 'normal');  % or 'bold' as needed
 
+
+tic
 algo = [3];
 
-iter_value = 0.1;
+iter_value = 0.025;
 
 % close all;
 
@@ -24,30 +32,29 @@ for i = 1:length(algo)
 
         algo_choice = algo(i);
     
-    while (opti_ratio < 1 + iter_value)
+    while (opti_ratio < 1 )
     
-        disp(["optimisation ratio = %f", opti_ratio]);
-        opti_raqatio = opti_ratio + iter_value;
+        opti_ratio = opti_ratio + iter_value
     
         switch algo_choice 
             case 1 
                 main;
-                path_lenght_pf(i_pf) = path_length_2;
+                path_length_pf(i_pf) = path_length_2;
                 alt_changes_pf(i_pf) = round(alt_changes_2, 2)/1e3;
                 E_pf(i_pf) = E;
                 TSP_duration_pf(i_pf) = TSP_bat_consumption_duration;
                 algo_name = "MILP";
             case 2
                 Main_ACO_TSP;
-                path_lenght_pf(i_pf) = path_lenght_ACO/1e3;
+                path_length_pf(i_pf) = path_lenght_ACO/1e3;
                 alt_changes_pf(i_pf) = round(alt_changes_ACO, 2)/1e3;
                 E_pf(i_pf) = E_ACO;
                 TSP_duration_pf(i_pf) = ACO_duration;
                 algo_name = "ACO";
             case 3
                 lkh_run;
-                path_lenght_pf(i_pf) = path_lenght_LKH/1e3;
-                alt_changes_pf(i_pf) = round(alt_changes_LKH, 2)/1e3;
+                path_length_pf(i_pf) = path_lenght_LKH/1e3;
+                alt_changes_pf(i_pf) = alt_changes_LKH/1e3;
                 E_pf(i_pf) = E_LKH;
                 TSP_duration_pf(i_pf) = NaN;
                 algo_name = "LKH";
@@ -57,23 +64,55 @@ for i = 1:length(algo)
         i_pf = i_pf + 1;
     
     end
+    total_pf_time = toc;
+    disp(['Total run time: ', num2str(round(total_pf_time, 1)), ' s']);
+
     
     pareto_front_enabled = false;
-    
-    figure(1);
-    hold on;
-    plot(alt_changes_pf, path_lenght_pf);
-    legend(algo_name);
-    title('Pareto front', algo_name);
-    xlabel('Altitude changes (m)');
-    ylabel('Path length (m)');
-    % zlabel('Z');
-    grid on;
-    hold off;
+
+close all;
+
+% Create the figure
+figure(1);
+hold on;
+
+% Plot path length on the primary y-axis
+yyaxis left;
+plot(path_length_pf, alt_changes_pf, 'LineWidth', 3);
+ylabel('Altitude changes (m)', 'FontSize', 12, 'Interpreter', 'latex');
+% ylim([20, 40]);  % Adjust the y-axis limits to zoom in on the intersection area
+ylim([0, 1100]);  % Adjust the y-axis limits to zoom in on the intersection area
+
+% Plot E_pf on the secondary y-axis, converted to MJ
+yyaxis right;
+plot(path_length_pf, E_pf / 1000, 'LineWidth', 3);
+ylabel('Energy Consumption (MJ)', 'FontSize', 12, 'Interpreter', 'latex');
+% ylim([9, 19]);  % Adjust the y-axis limits to zoom in on the intersection area
+ylim([0, 650]);  % Adjust the y-axis limits to zoom in on the intersection area
+
+% Add a horizontal line at the minimum of E_pf (converted to MJ)
+min_E_pf_MJ = min(E_pf) / 1000;  % Find the minimum value and convert to MJ
+hline = yline(min_E_pf_MJ, '--r', 'LineWidth', 2);  % Add the horizontal line
+
+% Adjust the x-axis limits to focus on the intersection area
+xlim([0, 6000]);  % Adjust these limits based on the intersection region
+
+% Add legend, title, and labels
+legend({algo_name, 'Energy Consumption (MJ)', 'Minimum Energy Consumption'}, ...
+    'FontSize', 10, 'Interpreter', 'latex');
+title(['Pareto Front - ', algo_name], 'FontSize', 12, 'Interpreter', 'latex');
+xlabel('Path length (m)', 'FontSize', 12, 'Interpreter', 'latex');
+
+% Grid on for better visibility
+grid on;
+
+
+
+hold off;
     
     figure(2);
     hold on;
-    bar(E_pf);
+    plot(E_pf/1000);
     title('Energy Consumption');
     xlabel('optimisation ratio');
     ylabel('Energy consumtion (kJ)');

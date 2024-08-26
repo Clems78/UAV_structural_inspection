@@ -28,6 +28,7 @@ centroid = incenter(gm);
 normal = faceNormal(gm);
 
 Mtar = [centroid, normal];
+filtered_indices_full = [];
 
 % Define the threshold for the z-coordinate on the viewpoints generation
 height = max(Mtar(:, 3)) - min(Mtar(:, 3));
@@ -59,7 +60,8 @@ colors = zeros(size(gm.ConnectivityList, 1), 3); % Initialize with zeros for all
 % colors = [1 0.6 0];
 % Map filtered indices back to the original structure
 filtered_indices = find(Mtar(:, 3) >= z_min_threshold & Mtar(:, 3) <= z_max_threshold & Mtar(:, 2) <= y_min_threshold);
-        
+filtered_indices_full = [filtered_indices_full; filtered_indices];
+
 % Print the surface
 trisurf(gm, 'FaceVertexCData', colors);
 

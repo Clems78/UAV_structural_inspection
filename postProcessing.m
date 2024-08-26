@@ -1,10 +1,10 @@
     % Coverage and overlap calculation:
 rmaj_fixed_pp = false;
 cprintf('Red', '\nTheory results\n');
-[no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, Mtar_filtered(:, 1:3), rmaj_main, rmaj_fixed, Mtar_filtered(:, 4:6), alpha_t, points, area_structure, inspected);
+[no_overlap, overlapped_twice, overlapped_thrice, overlapped_elmts, area_overlaped, area_not_cov, area_structure] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C, Mtar_filtered(:, 1:3), rmaj_main, rmaj_fixed, Mtar_filtered(:, 4:6), alpha_t, points, inspected);
 
 cprintf('Red', '\nGT results\n');
-[no_overlap_pp, overlapped_twice_pp, overlapped_thrice_pp, overlapped_elmts_pp, area_overlaped_pp, area_not_cov_pp] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C_pp, Mtar_filtered(:, 1:3), rmaj_p_2_pp, rmaj_fixed_pp, Mtar_filtered(:, 4:6), alpha_t, points, area_structure, inspected_pp);
+[no_overlap_pp, overlapped_twice_pp, overlapped_thrice_pp, overlapped_elmts_pp, area_overlaped_pp, area_not_cov_pp, area_structure] = overlapCalculation(nodes_list,ground_node, Mtar_filtered, C_pp, Mtar_filtered(:, 1:3), rmaj_p_2_pp, rmaj_fixed_pp, Mtar_filtered(:, 4:6), alpha_t, points, inspected_pp);
 
 % Average error of viewpoints position and orientation
 waypoints_ros_pp = waypoints_ros;

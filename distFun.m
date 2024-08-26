@@ -24,7 +24,7 @@ function D2 = distFun(ZI, ZJ, rmaj, rmin, alpha_t)
 
     % Combine the distances
     % alpha_t = 0.1;  % Example threshold
-    wp = 1;  % Example weight penalty
+    wp = 1;  % weight penalty
     
     w = ones(size(e_d));
     w(e_b > rmaj | e_d > 1 - cos(deg2rad(alpha_t))) = wp;

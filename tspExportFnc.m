@@ -64,7 +64,9 @@
     % fprintf(fid, 'PATCHING_A = 2\n');
     % fprintf(fid, 'RUNS = 10\n');
     fprintf(fid, 'OUTPUT_TOUR_FILE = wp_opt_sol.tsp\n');
-    fprintf(fid, 'TOTAL_TIME_LIMIT = %d\n', time_limit);
+    if ~(time_limit == 0)
+        fprintf(fid, 'TOTAL_TIME_LIMIT = %d\n', time_limit);
+    end
 
 
     

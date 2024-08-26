@@ -11,7 +11,6 @@ addpath("Functions");
 addpath("Post-Processing");
 addpath("Scripts");
 
-
 vp_calculation = true;
 
 if vp_calculation
@@ -24,12 +23,6 @@ pareto_front_enabled = false;
 
 % Import STL
 file_name = 'STL/cylinder.stl';
-% file_name = 'board.stl';
-% file_name = 'wind_turbine.stl';
-% file_name = 'cylinder_gz.stl';
-% file_name = 'wind_turbine_4e2.stl';
-% file_name = 'blade_2e2.stl';
-% file_name = 'tower_nacelle.stl';
 
 % Parameters viewpoints generation 
 initial_guess = false;
@@ -59,8 +52,6 @@ plotter = true;
 in_loop_plotter = true;
 in_loop_printer = false;
 pause_time = 0.001;
-
-% pareto front calculation parameters
 
 % Loading simulation parameters
 % simParamPaper;
